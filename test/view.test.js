@@ -1,0 +1,5 @@
+(function() {
+
+ModelTest = TestCase("ViewTest");
+
+}());
