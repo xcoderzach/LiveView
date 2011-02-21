@@ -1,0 +1,43 @@
+<!DOCTYPE HTML>
+<html>
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8">
+    <script type="text/javascript" charset="utf-8" src = "../lib/jquery-1.4.4.min.js"></script>
+    <script type="text/javascript" charset="utf-8" src = "../src/live_view.js"></script>
+    <title>Example 1</title>
+  </head>
+  <body>
+    <div id = "templateIterable">
+      <ul class = "things">
+        <li class = "thing">
+          <div class = "wrap">
+            <span class = "variable">Placeholder</span>
+          </div>
+        </li>
+      </ul>
+      <div id = "myView">
+        <div class = "currentTime"></div>
+      </div> 
+    </div>
+      <script>
+        var template;
+        $(function() {
+          template = new LiveView($("#templateIterable"), {
+            "things": [{"variable": 1}, 
+                       {"variable": 10},
+                       {"variable": 2, "wrap": false},
+                       {"variable": 6}] 
+          });
+
+          template.things.sort(function(data1, data2) {
+            return data2.variable - data1.variable;
+          });
+            
+          var view = new LiveView("#myView");
+          setInterval(function() {
+            view.set("currentTime", (new Date()).toTimeString());
+          }, 1000); 
+        });
+      </script>
+  </body>
+</html>
