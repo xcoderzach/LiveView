@@ -14,6 +14,29 @@ var LiveView;
     return Object.prototype.toString.call(array) === '[object Array]';
   };
   
+  function collectPreviousNodes(element, parent) {
+    var prev = [];
+    var el = element.previousSibling;
+    while(el !== null) {
+      prev.push(el);
+      el = el.previousSibling;
+    }
+    return prev;
+  }
+ 
+  // When reattaching a hidden element we start at the sibling element
+  // immediately before it, if that element is still attached, we put
+  // our element before it, if there are no elements before it
+  // we just prepend it to its parent
+  function reattach(element, parent, siblings) {
+    var i;
+    for(i = 0 ; i < siblings.length ; i++) {
+      $.contains(parent, siblings[i]); 
+      parent.insertBefore(element, siblings[i].nextSibling);
+      return;
+    }
+    element.prependTo(parent);
+  } 
 
 
   LiveView = function(template, data) {
@@ -31,20 +54,6 @@ var LiveView;
   };
 
 
-  // When reattaching a hidden element we start at the sibling element
-  // immediately before it, if that element is still attached, we put
-  // our element before it, if there are no elements before it
-  // we just prepend it to its parent
-  LiveView.prototype.reattach = function(element, parent, siblings) {
-    var i;
-    for(i = siblings.length - 1 ; i >= 0 ; i--) {
-      $.contains(parent, siblings[i]); 
-      element.insertAfter(siblings[i]);
-      return;
-    }
-    element.prependTo(parent);
-
-  }
 
   LiveView.prototype.getElementFromName = function(name, context) {
     return $("." + name, context);
@@ -63,7 +72,7 @@ var LiveView;
     // unhide it
     if(this.hiddenElements[name] && value !== false) {
       var obj = this.hiddenElements[name];
-      this.reattach(obj.el, obj.par, obj.sibs);
+      reattach(obj.el, obj.par, obj.sibs);
       delete this.hiddenElements[name];
     } 
     var element = this.getElementFromName(name, this.context);
@@ -80,10 +89,14 @@ var LiveView;
           }
         }, this);
       } else if (value === false) {
+        var p = element.parent().get(0);
+        var e = element.get(0);
+        var s = collectPreviousNodes(e, p);
+        element.detach();
         this.hiddenElements[name] = {
-          sibs: element.prevAll(),
-          par: element.parent(),
-          el: element.detach()
+          sibs: s,
+          par: p,
+          el: e
         }
       } else if(value === true) {
         //we already unhide the element so...do nothing!
