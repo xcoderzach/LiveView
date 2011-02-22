@@ -81,7 +81,7 @@
     });
 
     var item = template.things.get("id", "ac23f");
-    assertEquals("Got the right element", "ac23f", item.data.id.content);
+    assertEquals("Got the right element", "ac23f", item.data.id);
   }; 
 
   ViewTest.prototype.testSort = function() {
@@ -100,11 +100,11 @@
     });
 
     template.things.sort(function(data1, data2) {
-      return data1.variable.content - data2.variable.content;
+      return data1.variable - data2.variable;
     });
     expectAsserts(4);
     for(var i = 0 ; i < template.things.length() ; i++) {
-      assertEquals("not sorted", i + 1, template.things.get(i).data.variable.content);
+      assertEquals("not sorted", i + 1, template.things.get(i).data.variable);
     }
   };       
 
@@ -126,12 +126,12 @@
     template.things.sortBy("variable");
     expectAsserts(8);
     for(var i = 0 ; i < template.things.length() ; i++) {
-      assertEquals("not sorted", i + 1, template.things.get(i).data.variable.content);
+      assertEquals("not sorted", i + 1, template.things.get(i).data.variable);
     }
 
     template.things.sortBy("variable", true);
     for(i = 0 ; i < template.things.length() ; i++) {
-      assertEquals("not sorted", 4 - i , template.things.get(i).data.variable.content);
+      assertEquals("not sorted", 4 - i , template.things.get(i).data.variable);
     }
   };  
 
@@ -151,14 +151,14 @@
     });
 
     template.things.sort(function(data1, data2) {
-      return data1.variable.content - data2.variable.content;
+      return data1.variable - data2.variable;
     });
 
     template.things.add({"variable": 4});
 
     expectAsserts(5);
     for(var i = 0 ; i < template.things.length() ; i++) {
-      assertEquals("not sorted", i + 1, template.things.get(i).data.variable.content);
+      assertEquals("not sorted", i + 1, template.things.get(i).data.variable);
     }
   }; 
 
@@ -225,8 +225,8 @@
     var template = new LiveView($("#template"), {name: "Zach Smith"});
     template.set("name", {href: "mukari.com"});
 
-    jstestdriver.console.log(template.data);
     assertEquals("Data got clobbered", "mukari.com", template.data.name.href);
+    assertEquals("Data got clobbered", "Zach Smith", template.data.name);  
     assertEquals("Data got clobbered", "Zach Smith", template.data.name.content);  
   };
 
@@ -245,7 +245,7 @@
   };
 
   ViewTest.prototype.testDontInsertIfValueUnchanged = function() {
-    fail("!");
+    fail("I'm not sure if this is even neccesary!");
   };
 
   ViewTest.prototype.testLimit = function() {

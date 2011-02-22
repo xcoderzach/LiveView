@@ -11,6 +11,15 @@ var LiveView;
     }
   }
 
+  function merge(obj1, obj2) {
+    var i;
+    for(i in obj2) {
+      if(obj2.hasOwnProperty(i)) {
+        obj1[i] = obj2[i];
+      }
+    }
+  }
+
   var isArray = Array.isArray || function (array) {
     return Object.prototype.toString.call(array) === '[object Array]';
   };
@@ -26,8 +35,8 @@ var LiveView;
   LiveView = function(template, data) {
     var that = this;
     this.context = $(template);
-    this.data = data || {};
     this.hiddenElements = {};
+    this.data = {};
     each(data, function(key, value) { 
       if(isArray(value)) {
         this[key] = new LiveViewCollection(this.getElementFromName(key, this.context), value);
@@ -40,10 +49,11 @@ var LiveView;
   // Given the name of the data a user passed in, return an element
   // to populate with that data
   LiveView.prototype.getElementFromName = function(name, context) {
-    if(this.hiddenElements[name]) {
-      return $("." + name, this.hiddenElements[name].el);
-    }
-    return $("." + name, context);
+    var elements = $("." + name, context);
+    each(this.hiddenElements, function(index, obj) { 
+      elements = elements.add($(obj.el).find("." + name));
+    }, this);
+    return elements;
   };
 
   // Toggles whether a named item is visible on the page
@@ -84,20 +94,25 @@ var LiveView;
       each(name, this.set, this);
     } else {
       var element = this.getElementFromName(name, this.context);
-      this.data[name] = value;
-      if(typeof value === "boolean") {
-        this.setVisible(name, value);
-      } else if(typeof value === "object") {
-        each(value, function(key, value) {
-          if(key === "content") {
-            element.html(value);
-          } else {
-            element.attr(key, value);
-          }
-        }, this);
-      } else {
-        element.html(value);
-      }
+
+      if(typeof value == "boolean") {
+        value = {visible: value};
+      } else if(typeof value !== "object") {
+        value = {content: value};
+      } 
+
+      each(value, function(key, value) {
+        if(key === "content") {
+          element.html(value);
+        } else if(key === "visible") {
+          this.setVisible(name, value);
+        } else {
+          element.attr(key, value);
+        }
+      }, this);
+
+      this.data[name] = this.data[name] || {toString: function() { return this.content || ""; }};
+      merge(this.data[name], value);
     }
   };
 
@@ -130,7 +145,7 @@ var LiveView;
       var field = arguments[0];
       var value = arguments[1];
       for(i = 0 ; i < this.collection.length ; i++) {
-        if(this.collection[i].data[field] === value) {
+        if(this.collection[i].data[field].content === value) {
           return this.collection[i];
         }
       }
@@ -179,7 +194,7 @@ var LiveView;
       view = new LiveView(element, data);
       if(this.currentSortFunction) {
         for(var i = 0 ; i < this.collection.length; i++) {
-          if(this.currentSortFunction(this.collection[i].data, data) > 0) {
+          if(this.currentSortFunction(this.collection[i].data, view.data) > 0) {
             element.insertBefore(this.collection[i].context);
             this.collection.splice(i, 0, view);
             return view;
@@ -213,7 +228,7 @@ var LiveView;
   LiveViewCollection.prototype.sortBy = function(field, isDesc) {
     isDesc = (isDesc) ? -1 : 1;
     this.sort(function(x, y) {
-      return isDesc * ((x[field] > y[field]) ? 1 : -1);
+      return isDesc * ((x[field].content > y[field].content) ? 1 : -1);
     });
   };
 
