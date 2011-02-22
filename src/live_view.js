@@ -106,6 +106,8 @@ var LiveView;
           element.html(value);
         } else if(key === "visible") {
           this.setVisible(name, value);
+        } else if(key === "class") {
+          element.attr("class", name + " " + value);
         } else {
           element.attr(key, value);
         }

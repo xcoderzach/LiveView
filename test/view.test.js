@@ -244,6 +244,15 @@
     assertEquals("Not Set", "bar", $("#template .updateme").html());
   };
 
+  ViewTest.prototype.testSetClassAttribute = function() {
+    /*:DOC += <div id = "template">
+                <div class = "variable"></div>
+              </div>*/
+    var view = new LiveView($("#template"));
+    view.set("variable", {"class": "add cool"});
+    assertEquals("Variable was not set", $("#template .variable").attr("class"), "variable add cool"); 
+  };
+
   ViewTest.prototype.testDontInsertIfValueUnchanged = function() {
     fail("I'm not sure if this is even neccesary!");
   };
