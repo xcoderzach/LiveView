@@ -283,5 +283,13 @@
     assertEquals("Not limited", 3, $("#template .limit"));
   };
 
+  ViewTest.prototype.testSetCustomOrdering = function() {
+    fail("not implemented");
+  };
+
+  ViewTest.prototype.testTurnOffSorting = function() {
+    fail("not implemented");
+  };
+
 }());
 
