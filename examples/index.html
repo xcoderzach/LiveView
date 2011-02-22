@@ -14,6 +14,7 @@
           <div class = "wrap">
             <span class = "variable">Placeholder</span>
           </div>
+          some more random text
         </li>
       </ul>
       <div id = "myView">
@@ -24,17 +25,17 @@
         var template;
         $(function() {
           template = new LiveView($("#templateIterable"), {
-            "things": [{"variable": 1}, 
-                       {"variable": 10},
-                       {"variable": 2, "wrap": false},
-                       {"variable": 6}] 
+            "things": [{"variable": "apples"}, 
+                       {"variable": "pies"},
+                       {"variable": "bros"},
+                       {"variable": "cuffs"}] 
           });
 
-          template.things.sort(function(data1, data2) {
-            return data2.variable - data1.variable;
-          });
+          template.things.sortBy("variable", true);
             
-          var view = new LiveView("#myView");
+          var view = new LiveView("#myView", {
+            "currentTime": (new Date()).toTimeString()
+          });
           setInterval(function() {
             view.set("currentTime", (new Date()).toTimeString());
           }, 1000); 

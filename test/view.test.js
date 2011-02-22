@@ -143,34 +143,95 @@
   }; 
 
   ViewTest.prototype.testHidingMaintainsOrder = function() {
-    /*:DOC += <div id = "template">
-                text
-                <span class = "hideme"></span>
-                texty
-                <span class = "andme"></span>
-                textyyy
-                <span class = "alsome"></span>
-                textyyyyyy
-                <span class = "ninja"></span>
-                textooooo
-              </div>*/
-    var template = new LiveView($("#template"), {"hideme": 1, "andme": 2, "alsome": 3, "ninja": 4});
+    /*:DOC += <div id = "template"><span class = "hideme"></span><span class = "andme"></span><span class = "alsome"></span></div>*/
+    var template = new LiveView($("#template"), {"hideme": 1, "andme": 2, "alsome": 3});
 
-    var oldHtml = $("#template").html();
     //hide in order
-    template.set("hideme", false);
-    template.set("andme", false);
-    template.set("alsome", false);
-    template.set("ninja", false);
-    // make sure they're hidden
-    assertEquals("Elements not hidden", 0, $("#template").children().length);
-    // unhide them!
-    template.set("hideme", true);
-    template.set("ninja", true);
-    template.set("alsome", true);
-    template.set("andme", true);
-    //like we never touched it...KABLAM
-    assertEquals("Html was modified", oldHtml, $("#template").html());
+    var visible = false;
+
+    var setList = [ function() { template.set("hideme", visible); },
+                    function() { template.set("andme", visible); },
+                    function() { template.set("alsome", visible); }
+                   ];
+    //gunna test all permuations of hiding and unhiding, so I can be sure it works!
+    var p = [[1, 2, 3],
+             [1, 3, 2],
+             [2, 1, 3],
+             [2, 3, 1],
+             [3, 1, 2],
+             [3, 2, 1]];
+    var oldHtml;
+    for(var i = 0; i < 6 ; i++) {
+      for(var j = 0; j < 6 ; j++) {
+        setP = p[i];
+        unsetP = p[j];
+
+        oldHtml = $("#template").html();
+        //hide them!
+        visible = false;
+        setList[setP[0] -1]();
+        setList[setP[1] -1]();
+        setList[setP[2] -1]();
+        // make sure they're hidden
+        assertEquals("Elements not hidden", 0, $("#template").children().length);
+        visible = true;
+        // unhide them!
+        setList[unsetP[0] -1]();
+        setList[unsetP[1] -1]();
+        setList[unsetP[2] -1]();
+        //like we never touched it...KABLAM
+        assertEquals("Html was modified", oldHtml, $("#template").html());
+      }
+    }
   };  
+
+  ViewTest.prototype.testDataDoesntGetOverwrittenWhenAttributeIsUpdated = function() {
+    fail("probably broke");
+  };
+
+  ViewTest.prototype.testSettingHiddenElement = function() {
+    /*:DOC += <div id = "template">
+                <span class = "hideme">
+                  <div class = "updateme">
+                  </div>
+                </span>
+              </div> */
+    var template = new LiveView($("#template"), {"hideme": true, "updateme": "foo"});
+    template.set("hideme", false);
+    template.set("updateme", "bar");
+    template.set("hideme", true);
+    fail("not implemented yet, maybe it won't be...it's hard!");
+    assertEquals("Not Set", "bar", $("#template .updateme").html());
+  };
+
+  ViewTest.testDontInsertIfValueUnchanged = function() {
+    fail("failtacular");
+  });
+
+  ViewTest.testLimit = function() {
+    /*:DOC += <div id = "template">
+                <ul class = "limits">
+                  <li class = "limit">
+                    <div class = "name"></div>
+                  </li>
+                </ul>
+              </div> */ 
+    var template = new LiveView($("#template"), {
+      "limits": [{name: "Zach Smith"},
+                 {name: "Zach Smith"},
+                 {name: "Zach Smith"},
+                 {name: "Some Loser"}]
+    });
+
+    templates.limits.limit(3);
+
+    assertEquals("Not limited", 3, $("#template .limit"));
+
+    // shouldn't just let some lose in
+    templates.limits.add({name: "Another loser"});
+
+    //is it still limited?
+    assertEquals("Not limited", 3, $("#template .limit"));
+  });
 }());
 

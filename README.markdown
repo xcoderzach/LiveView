@@ -23,9 +23,20 @@ I have this html, make it live?
   Sure!
     // set it to the current time
     var view = new LiveView("#myView", {
-      "currentTime": (new Date()).toDateString()
+      "currentTime": (new Date()).toTimeString()
     });
     // and update it every second!
     setInterval(function() {
-      view.set("currentTime", (new Date()).toDateString());
+      view.set("currentTime", (new Date()).toTimeString());
     }, 1000);
+
+TODO
+====
+
+1) It would be nice if there were callbacks or something, 
+   "name.afterUpdate", "things.afterCreate", "name.beforeRemove", etc
+2) Implement limit
+3) Open Source it
+4) have limits be a data-attrib? maybe? or not?
+5) forms, do we want to do somethin wif em?
+6) shorthand for just setting attributes "name.href" "name#href" "name|href"?

@@ -1,6 +1,6 @@
 var LiveView;
 
-(function() {
+(function($) {
 
   function each(data, fn, context) {
     var i;
@@ -14,48 +14,11 @@ var LiveView;
   var isArray = Array.isArray || function (array) {
     return Object.prototype.toString.call(array) === '[object Array]';
   };
-  
-  function collectNextNodes(element, parent) {
-    var next = [];
-    var el = element.nextSibling;
-    while(el !== null) {
-      next.push(el);
-      el = el.nextSibling;
-    }
-    return next;
-  }
 
-  function collectNodes(attribute, element, parent) {
-    var arr = [],
-        el = element[attribute];
-    while(el !== null) {
-      arr.push(el);
-      el = el[attribute];
-    }
-    return arr;
-  }
- 
-  // When reattaching a hidden element we start at the sibling element
-  // immediately before it, if that element is still attached, we put
-  // our element before it, if there are no elements before it
-  // we just prepend it to its parent
-  function reattach(element, parent, next, prev) {
-    var i;
-    for(i = 0 ; i < next.length ; i++) {
-      if($.contains(parent, next[i])) {
-        parent.insertBefore(element, next[i]);
-        return;
-      }
-    }
-    for(i = 0 ; i < prev.length ; i++) {
-      if($.contains(parent, prev[i])) {
-        //this is actually insert after
-        parent.insertBefore(element, prev[i].nextSibling);
-        return;
-      }
-    } 
-    // just put the element anywhere, since there are no  visible siblings
-    parent.insertBefore(element, null);
+  //put an element back
+  function reattach(element, parent, placeholder) {
+    parent.insertBefore(element, placeholder.nextSibling);
+    parent.removeChild(placeholder);
   } 
 
   // Contstructs a new live view from a template (css selector, or html)
@@ -77,6 +40,9 @@ var LiveView;
   // Given the name of the data a user passed in, return an element
   // to populate with that data
   LiveView.prototype.getElementFromName = function(name, context) {
+    if(this.hiddenElements[name]) {
+      return $("." + name, this.hiddenElements[name].el);
+    }
     return $("." + name, context);
   };
 
@@ -88,6 +54,28 @@ var LiveView;
       this.set(name, false);
     }
   };
+
+  LiveView.prototype.setVisible = function(name, value) {
+    var element = this.getElementFromName(name, this.context);
+    if(this.hiddenElements[name] && value !== false && value.visible !== false) {
+      var obj = this.hiddenElements[name];
+      reattach(obj.el, obj.par, obj.placeholder);
+      delete this.hiddenElements[name];
+    } 
+    if (value === false) {
+      var p = element.parent().get(0);
+      var e = element.get(0);
+      var placeholder = document.createComment("placeholder");
+      p.insertBefore(placeholder, e);
+      element.detach();
+      this.hiddenElements[name] = {
+        placeholder: placeholder,
+        par: p,
+        el: e
+      };
+    } 
+  };
+
   // Sets the values of named element to value, also 
   // can take an object of name value pairs to bulk set
   LiveView.prototype.set = function(name, value) {
@@ -95,16 +83,11 @@ var LiveView;
     if(arguments.length !== 2) {
       each(name, this.set, this);
     } else {
-      // if we're setting a hidden element and it's not already hidden 
-      // unhide it
-      if(this.hiddenElements[name] && value !== false && value.hidden !== false) {
-        var obj = this.hiddenElements[name];
-        reattach(obj.el, obj.par, obj.next, obj.prev);
-        delete this.hiddenElements[name];
-      } 
       var element = this.getElementFromName(name, this.context);
       this.data[name] = value;
-      if(typeof value === "object") {
+      if(typeof value === "boolean") {
+        this.setVisible(name, value);
+      } else if(typeof value === "object") {
         each(value, function(key, value) {
           if(key === "content") {
             element.html(value);
@@ -112,20 +95,6 @@ var LiveView;
             element.attr(key, value);
           }
         }, this);
-      } else if (value === false) {
-        var p = element.parent().get(0);
-        var e = element.get(0);
-        var next = collectNodes("nextSibling", e, p);
-        var prev = collectNodes("previousSibling", e, p);
-        element.detach();
-        this.hiddenElements[name] = {
-          next: next,
-          prev: prev,
-          par: p,
-          el: e
-        };
-      } else if(value === true) {
-        //we already unhide the element so...do nothing!
       } else {
         element.html(value);
       }
@@ -244,7 +213,7 @@ var LiveView;
   LiveViewCollection.prototype.sortBy = function(field, isAsc) {
     isAsc = (isAsc) ? -1 : 1;
     this.sort(function(x, y) {
-      return x[field].localeCompare(y[field]) * isAsc;
+      return isAsc * ((x[field] > y[field]) ? 1 : -1);
     });
   };
 
@@ -259,4 +228,4 @@ var LiveView;
   LiveViewCollection.limit = function(count) {
     throw("not implemented");
   };
-}());
+}(jQuery));

@@ -1,0 +1,34 @@
+<!DOCTYPE HTML>
+<html>
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8">
+    <script type="text/javascript" charset="utf-8" src = "../lib/jquery-1.4.4.min.js"></script>
+    <script type="text/javascript" charset="utf-8" src = "../src/live_view.js"></script>
+    <title>A clock</title>
+  </head>
+  <body>
+    <div id = "templateIterable">
+      <div id = "myClock">
+        <span class = "hours"></span>:<span class = "minutes"></span>:<span class = "seconds"></span>
+      </div> 
+    </div>
+      <script>
+        var date = new Date();
+        //initialize the clock 
+        var view = new LiveView("#myClock", {
+          "hours": date.getHours(),
+          "minutes":date.getMinutes(),
+          "seconds":date.getSeconds()
+        });
+
+        setInterval(function() {
+          var date = new Date();
+          view.set({
+            "hours": date.getHours(),
+            "minutes":date.getMinutes(),
+            "seconds":date.getSeconds()
+          }); 
+        }, 1000); 
+      </script>
+  </body>
+</html>

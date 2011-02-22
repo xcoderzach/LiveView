@@ -1,0 +1,43 @@
+<!DOCTYPE HTML>
+<html>
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8">
+    <script type="text/javascript" charset="utf-8" src = "../lib/jquery-1.4.4.min.js"></script>
+    <script type="text/javascript" charset="utf-8" src = "../src/live_view.js"></script>
+    <title>Blog Example</title>
+  </head>
+  <body>
+    <div id = "blog">
+      <h1 class = "blogTitle"></h1>
+      <ul class = "blogPosts">
+        <li class = "blogPost">
+          <div class = "title"></div>
+          <div class = "content"></div>
+        </li>
+      </ul>
+      <div id = "myView">
+        <div class = "currentTime"></div>
+      </div> 
+    </div>
+      <script>
+        //Our blog posts
+        var blogPosts = [{"title": "HTML5 is the new javascript",
+                          "content": "Forget that javascript! Soon, we'll be able to do all of our client side scripting with HTML5!",
+                          "created_at": new Date(2011, 2, 15)}, 
+                         {"title": "Why content farms are the future of the internet!",
+                          "content": "Forget doing something cool and original, content farms are the quickest way to turn a profit!",
+                          "created_at": new Date(2011, 2, 16)}, 
+                         {"title": "Programming is Dead: long live \"Lego Oriented Programming\"",
+                          "content": "In 5 years, no one will be programming, they'll just hook up modules, like legos, and ANYONE will be able to do it",
+                          "created_at": new Date(2011, 2, 17)}]; 
+        $(function() {
+          template = new LiveView($("#blog"), {
+            "blogTitle": "SEO: The art and science of making your website look more valuable than it actually is!",
+            "blogPosts": blogPosts
+          });
+
+          template.blogPosts.sortBy("created_at", true);
+        });
+      </script>
+  </body>
+</html>
