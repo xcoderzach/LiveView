@@ -22,7 +22,7 @@ var LiveView;
   } 
 
   // Contstructs a new live view from a template (css selector, or html)
-  // and, "optional" data
+  // and, optional data.
   LiveView = function(template, data) {
     var that = this;
     this.context = $(template);
@@ -210,10 +210,10 @@ var LiveView;
   // sortBy by is a convenience method, if you don't want
   // to write your own sort function. Sorts the field given,
   // alphabetically
-  LiveViewCollection.prototype.sortBy = function(field, isAsc) {
-    isAsc = (isAsc) ? -1 : 1;
+  LiveViewCollection.prototype.sortBy = function(field, isDesc) {
+    isDesc = (isDesc) ? -1 : 1;
     this.sort(function(x, y) {
-      return isAsc * ((x[field] > y[field]) ? 1 : -1);
+      return isDesc * ((x[field] > y[field]) ? 1 : -1);
     });
   };
 
@@ -225,7 +225,7 @@ var LiveView;
   // would only show the first ten items in a collection
   // anything else is still in memory, and would show up
   // if you changed the sort
-  LiveViewCollection.limit = function(count) {
+  LiveViewCollection.prototype.limit = function(count) {
     throw("not implemented");
   };
 }(jQuery));

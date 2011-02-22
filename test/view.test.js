@@ -1,4 +1,5 @@
 (function() {
+
   ViewTest = TestCase("ViewTest");
 
   ViewTest.prototype.testSetVariable = function() {
@@ -106,6 +107,29 @@
       assertEquals("not sorted", i + 1, template.things.get(i).data.variable);
     }
   };       
+
+  ViewTest.prototype.testSortBy = function() {
+    /*:DOC += <div id = "templateWitIds">
+                <ul class = "things">
+                  <li class = "thing">
+                    <span class = "variable"></span>
+                  </li>
+                </ul>
+              </div>*/
+    var template = new LiveView($("#templateWitIds"), {
+      "things": [{"variable": 1}, 
+                 {"variable": 3},
+                 {"variable": 2},
+                 {"variable": 4}]
+    });
+
+    template.things.sortBy("variable");
+    expectAsserts(4);
+    for(var i = 0 ; i < template.things.length() ; i++) {
+      assertEquals("not sorted", i + 1, template.things.get(i).data.variable);
+    }
+  };  
+
   ViewTest.prototype.testAddAfterSort = function() {
     /*:DOC += <div id = "templateWitIds">
                 <ul class = "things">
@@ -132,6 +156,7 @@
       assertEquals("not sorted", i + 1, template.things.get(i).data.variable);
     }
   }; 
+
   ViewTest.prototype.testHidingElement = function() {
     /*:DOC += <div id = "template">
                 <span class = "hideme"></span>
@@ -143,16 +168,19 @@
   }; 
 
   ViewTest.prototype.testHidingMaintainsOrder = function() {
-    /*:DOC += <div id = "template"><span class = "hideme"></span><span class = "andme"></span><span class = "alsome"></span></div>*/
-    var template = new LiveView($("#template"), {"hideme": 1, "andme": 2, "alsome": 3});
+    /*:DOC += <div id = "template">
+                <span class = "hideme"></span>
+                <span class = "andme"></span>
+                <span class = "alsome"></span>
+              </div>*/
 
-    //hide in order
+    var template = new LiveView("#template", {"hideme": 1, "andme": 2, "alsome": 3});
+
     var visible = false;
 
     var setList = [ function() { template.set("hideme", visible); },
                     function() { template.set("andme", visible); },
-                    function() { template.set("alsome", visible); }
-                   ];
+                    function() { template.set("alsome", visible); } ];
     //gunna test all permuations of hiding and unhiding, so I can be sure it works!
     var p = [[1, 2, 3],
              [1, 3, 2],
@@ -204,11 +232,11 @@
     assertEquals("Not Set", "bar", $("#template .updateme").html());
   };
 
-  ViewTest.testDontInsertIfValueUnchanged = function() {
+  ViewTest.prototype.testDontInsertIfValueUnchanged = function() {
     fail("failtacular");
-  });
+  };
 
-  ViewTest.testLimit = function() {
+  ViewTest.prototype.testLimit = function() {
     /*:DOC += <div id = "template">
                 <ul class = "limits">
                   <li class = "limit">
@@ -223,15 +251,16 @@
                  {name: "Some Loser"}]
     });
 
-    templates.limits.limit(3);
+    template.limits.limit(3);
 
     assertEquals("Not limited", 3, $("#template .limit"));
 
-    // shouldn't just let some lose in
-    templates.limits.add({name: "Another loser"});
+    // shouldn't just let some loser in
+    template.limits.add({name: "Another loser"});
 
     //is it still limited?
     assertEquals("Not limited", 3, $("#template .limit"));
-  });
+  };
+
 }());
 
