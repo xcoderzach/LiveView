@@ -81,7 +81,7 @@
     });
 
     var item = template.things.get("id", "ac23f");
-    assertEquals("Got the right element", "ac23f", item.data.id);
+    assertEquals("Got the right element", "ac23f", item.data.id.content);
   }; 
 
   ViewTest.prototype.testSort = function() {
@@ -100,11 +100,11 @@
     });
 
     template.things.sort(function(data1, data2) {
-      return data1.variable - data2.variable;
+      return data1.variable.content - data2.variable.content;
     });
     expectAsserts(4);
     for(var i = 0 ; i < template.things.length() ; i++) {
-      assertEquals("not sorted", i + 1, template.things.get(i).data.variable);
+      assertEquals("not sorted", i + 1, template.things.get(i).data.variable.content);
     }
   };       
 
@@ -124,9 +124,14 @@
     });
 
     template.things.sortBy("variable");
-    expectAsserts(4);
+    expectAsserts(8);
     for(var i = 0 ; i < template.things.length() ; i++) {
-      assertEquals("not sorted", i + 1, template.things.get(i).data.variable);
+      assertEquals("not sorted", i + 1, template.things.get(i).data.variable.content);
+    }
+
+    template.things.sortBy("variable", true);
+    for(i = 0 ; i < template.things.length() ; i++) {
+      assertEquals("not sorted", 4 - i , template.things.get(i).data.variable.content);
     }
   };  
 
@@ -146,14 +151,14 @@
     });
 
     template.things.sort(function(data1, data2) {
-      return data1.variable - data2.variable;
+      return data1.variable.content - data2.variable.content;
     });
 
     template.things.add({"variable": 4});
 
     expectAsserts(5);
     for(var i = 0 ; i < template.things.length() ; i++) {
-      assertEquals("not sorted", i + 1, template.things.get(i).data.variable);
+      assertEquals("not sorted", i + 1, template.things.get(i).data.variable.content);
     }
   }; 
 
@@ -214,7 +219,15 @@
   };  
 
   ViewTest.prototype.testDataDoesntGetOverwrittenWhenAttributeIsUpdated = function() {
-    fail("probably broke");
+    /*:DOC += <div id = "template">
+                <a class = "name"></a>
+              </div> */ 
+    var template = new LiveView($("#template"), {name: "Zach Smith"});
+    template.set("name", {href: "mukari.com"});
+
+    jstestdriver.console.log(template.data);
+    assertEquals("Data got clobbered", "mukari.com", template.data.name.href);
+    assertEquals("Data got clobbered", "Zach Smith", template.data.name.content);  
   };
 
   ViewTest.prototype.testSettingHiddenElement = function() {
@@ -228,12 +241,11 @@
     template.set("hideme", false);
     template.set("updateme", "bar");
     template.set("hideme", true);
-    fail("not implemented yet, maybe it won't be...it's hard!");
     assertEquals("Not Set", "bar", $("#template .updateme").html());
   };
 
   ViewTest.prototype.testDontInsertIfValueUnchanged = function() {
-    fail("failtacular");
+    fail("!");
   };
 
   ViewTest.prototype.testLimit = function() {
