@@ -1,11 +1,26 @@
-What is this?
-=============
+Disclaimer
+==========
 
-The DOM isn't a string! Don't treat it like one!
-------------------------------------------------
+  This is experimental, if you poke it too hard it might break.  You've been
+  warned.
 
-  This is experimental, alpha software, api's are unstable, if you poke it too
-  hard it might break.  You've been warned.
+Why?
+====
+
+
+  I wanted a way to have templates that could be defined in semantic markup
+  and, given JSON could generate my markup.
+
+  I also wanted a way to create update and delete data that had been given to
+  my templates on the fly.
+
+#### The DOM isn't a string! Don't treat it like one!
+
+What?
+=====
+
+  Rather than create a seperate language for templating, LiveView uses a 
+  stricter subset of html.  
 
   LiveView trys to solve the same problems as traditional templating systems,
   and then some.  Rather than generating static markup, LiveView generates a
@@ -22,7 +37,7 @@ The DOM isn't a string! Don't treat it like one!
 When should I use this?
 =======================
   
-  When part of your web app is changing rapidly, it's super useful.  LiveView
+  When parts of your web app are changing rapidly, it's super useful.  LiveView
   is best suited for realtime web applications.  If your page doesn't update
   very often you can probably get away with just inserting HTML fragment
   strings into the document.  
@@ -101,7 +116,8 @@ I have a list of blog posts, how do I show all of them?
 =======================================================
 
   Naturally, any template system is going to have to handle blocks, or
-  iterables, or each statements.  Here's how you do it with LiveView.  
+  iterables, or each statements, whatever you want to call them.  Here's how
+  you do it with LiveView.  
 
     <div id = "list">
       <ul class = "posts">
@@ -110,7 +126,10 @@ I have a list of blog posts, how do I show all of them?
         </li>
       </ul>
     </div>
-    
+  
+  The markup must be a container div, with the class name the same as the data's name
+  and ONE child element inside of it, which may or may not have a class, up to you.
+
   Some JS:
 
     var view = new LiveView("#list", {
@@ -170,6 +189,9 @@ TODO
 1. It would be nice if there were callbacks or something, "name.afterUpdate",
    "things.afterCreate", "name.beforeRemove", etc or just a afterUpdate
    beforeUpdate type thing which passes in a name and an element
+2. Use some kind of document generator/comment format
+2. Serialization: "package up" the current state so we can transport it from
+   the server.
 2. Implement limit
 3. Open Source it
 4. have limits be a data-attrib? maybe? or not?

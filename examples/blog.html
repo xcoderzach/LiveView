@@ -13,6 +13,11 @@
         <li class = "blogPost">
           <div class = "title"></div>
           <div class = "content"></div>
+          <ul class = "comments">
+            <li class = "comment">
+              <div class = "body"></div>
+            </li>
+          </ul>
         </li>
       </ul>
       <div id = "myView">
@@ -23,13 +28,16 @@
         //Our blog posts
         var blogPosts = [{"title": "HTML5 is the new javascript",
                           "content": "Forget that javascript! Soon, we'll be able to do all of our client side scripting with HTML5!",
-                          "created_at": new Date(2011, 2, 15)}, 
+                          "created_at": new Date(2011, 2, 15),
+                          "comments": [{"body": "yo dawg"}, {"body": "sup"}]}, 
                          {"title": "Why content farms are the future of the internet!",
                           "content": "Forget doing something cool and original, content farms are the quickest way to turn a profit!",
-                          "created_at": new Date(2011, 2, 16)}, 
+                          "created_at": new Date(2011, 2, 16), 
+                          "comments": [{"body": "yo dawg2"}, {"body": "sup2"}]}, 
                          {"title": "Programming is Dead: long live \"Lego Oriented Programming\"",
                           "content": "In 5 years, no one will be programming, they'll just hook up modules, like legos, and ANYONE will be able to do it",
-                          "created_at": new Date(2011, 2, 17)}]; 
+                          "created_at": new Date(2011, 2, 17), 
+                          "comments": [{"body": "yo dawg3"}, {"body": "sup3"}]}]; 
         $(function() {
           template = new LiveView($("#blog"), {
             "blogTitle": "SEO: The art and science of making your website look more valuable than it actually is!",
