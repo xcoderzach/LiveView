@@ -132,6 +132,7 @@ var LiveView;
   var LiveViewCollection = function(container, data) {
     this.container = container;
     this.collection = [];
+    this.events = {};
     this.template = $(container.children()[0]).remove();
     this.container.html("");
     this.add(data);
@@ -173,6 +174,18 @@ var LiveView;
     return old;
   }; 
 
+  LiveViewCollection.prototype.on = function(evt, fn) {
+    this.events[evt] = this.events[evt] || [];
+    this.events[evt].push(fn);
+  };
+
+  LiveViewCollection.prototype.emit = function(evt) {
+    var args = [].splice.call(arguments, 1);
+    each(this.events[evt], function(i, fn) {
+      fn.apply(null, args);
+    });
+  };
+
   //detach all event listeners but keep associated jquery data
   LiveViewCollection.prototype.detachAll = function() {
     var old = this.collection.splice(0);
@@ -194,6 +207,7 @@ var LiveView;
 
       this.container.append(element);
       this.collection.push(view);
+      this.emit("add", element, data);
       return view;
     } else {
       each(data, function(i, item) { this.add(item); }, this);

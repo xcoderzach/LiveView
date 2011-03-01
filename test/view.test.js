@@ -175,12 +175,38 @@
     assertEquals("Variable was not set", $("#template .variable").attr("class"), "variable add cool"); 
   };
 
+  ViewTest.prototype.testSetClassAttribute = function() {
+    /*:DOC += <div id = "template">
+                <div class = "variable"></div>
+              </div>*/
+    var view = new LiveView($("#template"));
+    view.set("variable", {"class": "add cool"});
+    assertEquals("Variable was not set", $("#template .variable").attr("class"), "variable add cool"); 
+  }; 
+
   ViewTest.prototype.testDontInsertIfValueUnchanged = function() {
     fail("I'm not sure if this is even neccesary!");
   };
 
-  ViewTest.prototype.testSetCustomOrdering = function() {
-    fail("not implemented");
+  ViewTest.prototype.testCreateEvent = function() {
+     /*:DOC += <div id = "templateIterable">
+                <ul class = "things">
+                  <li class = "thing">
+                    <span class = "variable"></span>
+                  </li>
+                </ul>
+              </div>*/
+    expectAsserts(1);
+    var template = new LiveView("#templateIterable", {
+      "things": []
+    });
+
+    template.things.on("add", function(element, data) {
+      assertEquals("Thing added", "A value", data.variable);
+    });
+
+    template.things.add({"variable": "A value"});
+    
   };
 
 }());
