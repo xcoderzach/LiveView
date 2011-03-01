@@ -50,7 +50,7 @@
     thing.set({"variable": "newValue"});
     assertEquals("Variable was not set", $("#templateCollection .variable").html(), "newValue");
   }; 
-  /* FRACK THIS TEST IT WORKS IN THE EXAMPLES WITH THE EXACT SAME CODE */
+
   ViewTest.prototype.testDeleteIterable = function() {
     /*:DOC += <div id = "templateDelete">
                 <ul class = "things">
