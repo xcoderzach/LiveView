@@ -84,84 +84,6 @@
     assertEquals("Got the right element", "ac23f", item.data.id);
   }; 
 
-  ViewTest.prototype.testSort = function() {
-    /*:DOC += <div id = "templateWitIds">
-                <ul class = "things">
-                  <li class = "thing">
-                    <span class = "variable"></span>
-                  </li>
-                </ul>
-              </div>*/
-    var template = new LiveView($("#templateWitIds"), {
-      "things": [{"variable": 1}, 
-                 {"variable": 3},
-                 {"variable": 2},
-                 {"variable": 4}]
-    });
-
-    template.things.sort(function(data1, data2) {
-      return data1.variable - data2.variable;
-    });
-    expectAsserts(4);
-    for(var i = 0 ; i < template.things.length() ; i++) {
-      assertEquals("not sorted", i + 1, template.things.get(i).data.variable);
-    }
-  };       
-
-  ViewTest.prototype.testSortBy = function() {
-    /*:DOC += <div id = "templateWitIds">
-                <ul class = "things">
-                  <li class = "thing">
-                    <span class = "variable"></span>
-                  </li>
-                </ul>
-              </div>*/
-    var template = new LiveView($("#templateWitIds"), {
-      "things": [{"variable": 1}, 
-                 {"variable": 3},
-                 {"variable": 2},
-                 {"variable": 4}]
-    });
-
-    template.things.sortBy("variable");
-    expectAsserts(8);
-    for(var i = 0 ; i < template.things.length() ; i++) {
-      assertEquals("not sorted", i + 1, template.things.get(i).data.variable);
-    }
-
-    template.things.sortBy("variable", true);
-    for(i = 0 ; i < template.things.length() ; i++) {
-      assertEquals("not sorted", 4 - i , template.things.get(i).data.variable);
-    }
-  };  
-
-  ViewTest.prototype.testAddAfterSort = function() {
-    /*:DOC += <div id = "templateWitIds">
-                <ul class = "things">
-                  <li class = "thing">
-                    <span class = "variable"></span>
-                  </li>
-                </ul>
-              </div>*/
-    var template = new LiveView($("#templateWitIds"), {
-      "things": [{"variable": 1}, 
-                 {"variable": 3},
-                 {"variable": 2},
-                 {"variable": 5}]
-    });
-
-    template.things.sort(function(data1, data2) {
-      return data1.variable - data2.variable;
-    });
-
-    template.things.add({"variable": 4});
-
-    expectAsserts(5);
-    for(var i = 0 ; i < template.things.length() ; i++) {
-      assertEquals("not sorted", i + 1, template.things.get(i).data.variable);
-    }
-  }; 
-
   ViewTest.prototype.testHidingElement = function() {
     /*:DOC += <div id = "template">
                 <span class = "hideme"></span>
@@ -257,37 +179,7 @@
     fail("I'm not sure if this is even neccesary!");
   };
 
-  ViewTest.prototype.testLimit = function() {
-    /*:DOC += <div id = "template">
-                <ul class = "limits">
-                  <li class = "limit">
-                    <div class = "name"></div>
-                  </li>
-                </ul>
-              </div> */ 
-    var template = new LiveView($("#template"), {
-      "limits": [{name: "Zach Smith"},
-                 {name: "Zach Smith"},
-                 {name: "Zach Smith"},
-                 {name: "Some Loser"}]
-    });
-
-    template.limits.limit(3);
-
-    assertEquals("Not limited", 3, $("#template .limit"));
-
-    // shouldn't just let some loser in
-    template.limits.add({name: "Another loser"});
-
-    //is it still limited?
-    assertEquals("Not limited", 3, $("#template .limit"));
-  };
-
   ViewTest.prototype.testSetCustomOrdering = function() {
-    fail("not implemented");
-  };
-
-  ViewTest.prototype.testTurnOffSorting = function() {
     fail("not implemented");
   };
 

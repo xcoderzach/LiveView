@@ -33,7 +33,6 @@ var LiveView;
   // Contstructs a new live view from a template (css selector, or html)
   // and, optional data.
   LiveView = function(template, data) {
-    var that = this;
     this.context = $(template);
     this.hiddenElements = {};
     this.data = {};
@@ -189,60 +188,16 @@ var LiveView;
   LiveViewCollection.prototype.add = function(data) {
     var element,
         view;
-    if(isArray(data)) {
-      each(data, function(i, item) { this.add(item); }, this);
-    } else {
+    if(!isArray(data)) {
       element = this.template.clone(true);
       view = new LiveView(element, data);
-      if(this.currentSortFunction) {
-        for(var i = 0 ; i < this.collection.length; i++) {
-          if(this.currentSortFunction(this.collection[i].data, view.data) > 0) {
-            element.insertBefore(this.collection[i].context);
-            this.collection.splice(i, 0, view);
-            return view;
-          }
-        }
-      }
-      // if the above loop doesn't return, or the list isn't sorted
-      // add it to the end 
+
       this.container.append(element);
       this.collection.push(view);
       return view;
+    } else {
+      each(data, function(i, item) { this.add(item); }, this);
     }
   };
 
-  // sort using a function, the function takes two data parameters
-  // bleh....
-  LiveViewCollection.prototype.sort = function(fn) {
-    this.currentSortFunction = fn;
-    var sorted = this.detachAll().sort(function(x, y) {
-      return fn(x.data, y.data);
-    });                           
-    this.collection = sorted;
-    each(sorted, function(i, item) {
-      item.attach(this.container);
-    }, this);
-  };
-
-  // sortBy by is a convenience method, if you don't want
-  // to write your own sort function. Sorts the field given,
-  // alphabetically
-  LiveViewCollection.prototype.sortBy = function(field, isDesc) {
-    isDesc = (isDesc) ? -1 : 1;
-    this.sort(function(x, y) {
-      return isDesc * ((x[field].content > y[field].content) ? 1 : -1);
-    });
-  };
-
-  // limit the number of things we show, chop off
-  // anything that doesn't fit!
-  //
-  // example
-  //     collection.limit(10);
-  // would only show the first ten items in a collection
-  // anything else is still in memory, and would show up
-  // if you changed the sort
-  LiveViewCollection.prototype.limit = function(count) {
-    throw("not implemented");
-  };
 }(jQuery));
