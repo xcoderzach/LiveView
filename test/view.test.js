@@ -218,13 +218,40 @@
       "things": []
     });
 
-    template.things.on("add", function(element, data) {
-      assertEquals("Thing added", "A value", data.variable);
+    template.things.on("add", function(view) {
+      assertEquals("Thing added", "A value", $(".variable", view.context).html());
     });
 
     template.things.add({"variable": "A value"});
-    
   };
+
+  ViewTest.prototype.testMoveEvent = function() {
+    /*:DOC += <div id = "templateIterable">
+                <ul class = "things">
+                  <li class = "thing">
+                    <span class = "variable"></span>
+                  </li>
+                </ul>
+              </div>*/
+    expectAsserts(2);
+    var template = new LiveView("#templateIterable", {
+      "things": [{"variable": 1},
+                 {"variable": 2},
+                 {"variable": 3}]
+    });
+ 
+    template.things.on("move", function(view, oldIndex, newIndex) {
+      if(oldIndex == 2) {
+        assertEquals("Thing not moved", 1, newIndex);
+      } 
+      if(oldIndex == 1) {
+        assertEquals("Thing not moved", 2, newIndex);
+      }
+    });
+
+    template.things.reorder([0,2,1]);
+
+  }; 
 
 }());
 

@@ -212,6 +212,10 @@ var LiveView;
     for(i = 0 ; i < newOrder.length ; i++) {
       index = newOrder[i];
       newCollection[i] = this.collection[index];
+
+      if(index !== i) {
+        this.emit("move", this.collection[index], index, i);
+      }
     }
     this.collection = newCollection;
     this.attachAll();
@@ -229,7 +233,7 @@ var LiveView;
 
       this.container.append(element);
       this.collection.push(view);
-      this.emit("add", element, data);
+      this.emit("add", view, data);
       return view;
     } else {
       each(data, function(i, item) { this.add(item); }, this);
