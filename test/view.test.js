@@ -225,6 +225,27 @@
     template.things.add({"variable": "A value"});
   };
 
+  ViewTest.prototype.testRemoveEvent = function() {
+    /*:DOC += <div id = "templateIterable">
+                <ul class = "things">
+                  <li class = "thing">
+                    <span class = "variable"></span>
+                  </li>
+                </ul>
+              </div>*/
+    expectAsserts(1);
+    var template = new LiveView("#templateIterable", {
+      "things": [{"variable": 1},
+                 {"variable": 2},
+                 {"variable": 3}]
+    });
+    template.things.on("remove", function(view) {
+      assertEquals("Thing not removed", 1, $(".variable", view.context).html());
+    });
+
+    template.things.remove(0);
+  }; 
+
   ViewTest.prototype.testMoveEvent = function() {
     /*:DOC += <div id = "templateIterable">
                 <ul class = "things">

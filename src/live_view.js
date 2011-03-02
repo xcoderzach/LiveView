@@ -166,7 +166,9 @@ var LiveView;
   };
  
   LiveViewCollection.prototype.remove = function(i) {
-    return this.collection.splice(i, 1)[0].remove();
+    var view = this.collection.splice(i, 1)[0];
+    this.emit("remove", view);
+    return view.remove();
   };
 
   //wipe out everything no more jquery event listeners or associated data
@@ -183,6 +185,7 @@ var LiveView;
     this.events[evt].push(fn);
   };
 
+  //returns whether any handlers were called
   LiveViewCollection.prototype.emit = function(evt) {
     var args = [].splice.call(arguments, 1);
     each(this.events[evt], function(i, fn) {
