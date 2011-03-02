@@ -277,6 +277,27 @@
     template.things.create({"variable": "blah"});
     template.things.create({"variable": "blah"});
   }; 
+  ViewTest.prototype.testAddDifferentType = function() {
+    /*:DOC += <div class = "template">
+                <ul class = "things">
+                  <li class = "thing">
+                    <span class = "variable"></span>
+                  </li>
+                </ul>
+                <div class = "notherthing">
+                  <div class = "value"></div>
+                </div>
+              </div>
+              */
+    var template = new LiveView(".things", {
+      "things": [{"variable": "A variable"}]
+    });
 
+    var notherthing = new LiveView(".notherthing", {"value":"val"});
+
+    template.things.add(notherthing);
+
+    assertEquals("Wrong value", "val", $(".things .notherthing .value").html());
+  }; 
 }());
 

@@ -145,7 +145,7 @@ var LiveView;
     this.events = {};
     this.template = $(container.children()[0]).remove();
     this.container.html("");
-    this.add(data);
+    this.create(data);
   };
 
   // If one argument, returns view at that index
@@ -229,20 +229,24 @@ var LiveView;
   // add an item to the collection if the collection is sorted
   // adds it in the right place, otherwise add it at the end
   // return a the new liveView when completed
-  LiveViewCollection.prototype.add = function(data) {
+  LiveViewCollection.prototype.create = function(data) {
     var element,
         view;
     if(!isArray(data)) {
       element = this.template.clone(true);
       view = new LiveView(element, data);
 
-      this.container.append(element);
-      this.collection.push(view);
-      this.emit("add", view, data);
+      this.add(view);
       return view;
     } else {
-      each(data, function(i, item) { this.add(item); }, this);
+      each(data, function(i, item) { this.create(item); }, this);
     }
+  };
+
+  LiveViewCollection.prototype.add = function(view) {
+    this.container.append(view.context.detach());
+    this.collection.push(view);
+    this.emit("add", view);
   };
 
 }(jQuery));
