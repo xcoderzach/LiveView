@@ -245,5 +245,19 @@
 
   }; 
 
+  ViewTest.prototype.testSelfIsIterable = function() {
+    /*:DOC += <ul class = "things">
+                  <li class = "thing">
+                    <span class = "variable"></span>
+                  </li>
+                </ul>
+              */
+    var template = new LiveView(".things", {
+      "things": [{"variable": "A variable"}]
+    });
+
+    assertEquals("Variable was not set", $(".things li:nth-child(1) .variable").html(), "A variable"); 
+  }; 
+
 }());
 

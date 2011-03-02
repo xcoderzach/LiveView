@@ -64,6 +64,9 @@ var LiveView;
   // Given the name of the data a user passed in, return an element
   // to populate with that data
   LiveView.prototype.getElementFromName = function(name, context) {
+    if($(context).is("." + name)) {
+      return context;
+    }
     var elements = $("." + name, context);
     each(this.hiddenElements, function(index, obj) { 
       elements = elements.add($(obj.el).find("." + name));
