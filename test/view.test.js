@@ -28,7 +28,7 @@
       "things": [{"variable": "A variable"}]
     });
 
-    template.things.add({"variable": "A value"});
+    template.things.create({"variable": "A value"});
 
     assertEquals("Variable was not set", $("#templateIterable li:nth-child(1) .variable").html(), "A variable");
     assertEquals("Variable was not set", $("#templateIterable li:nth-child(2) .variable").html(), "A value");
@@ -46,7 +46,7 @@
       "things": []
     });
 
-    var thing = template.things.add({"variable": "value"});
+    var thing = template.things.create({"variable": "value"});
     thing.set({"variable": "newValue"});
     assertEquals("Variable was not set", $("#templateCollection .variable").html(), "newValue");
   }; 
@@ -193,7 +193,7 @@
       assertEquals("Thing added", "A value", $(".variable", view.context).html());
     });
 
-    template.things.add({"variable": "A value"});
+    template.things.create({"variable": "A value"});
   };
 
   ViewTest.prototype.testRemoveEvent = function() {
@@ -274,8 +274,8 @@
       assertTrue("Was not called", true);
     });
 
-    template.things.add({"variable": "blah"});
-    template.things.add({"variable": "blah"});
+    template.things.create({"variable": "blah"});
+    template.things.create({"variable": "blah"});
   }; 
 
 }());
