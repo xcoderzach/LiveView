@@ -24,11 +24,28 @@ var LiveView;
     return Object.prototype.toString.call(array) === '[object Array]';
   };
 
-  //put an element back
+  //put an element back after it has been removed
   function reattach(element, parent, placeholder) {
     parent.insertBefore(element, placeholder.nextSibling);
     parent.removeChild(placeholder);
   } 
+
+  function unattach(element, parent) {
+    var p = element.parent().get(0);
+    var e = element.get(0);
+    var placeholder = document.createComment("placeholder");
+    p.insertBefore(placeholder, e);  
+
+    return {
+      placeholder: placeholder,
+      par: p,
+      el: e,
+      reattach: function() {
+        reattach(e, p, placeholder);
+      }
+    };
+  }
+  
 
   // Contstructs a new live view from a template (css selector, or html)
   // and, optional data.
@@ -67,21 +84,12 @@ var LiveView;
   LiveView.prototype.setVisible = function(name, value) {
     var element = this.getElementFromName(name, this.context);
     if(this.hiddenElements[name] && value !== false && value.visible !== false) {
-      var obj = this.hiddenElements[name];
-      reattach(obj.el, obj.par, obj.placeholder);
+      this.hiddenElements[name].reattach();
       delete this.hiddenElements[name];
     } 
     if (value === false) {
-      var p = element.parent().get(0);
-      var e = element.get(0);
-      var placeholder = document.createComment("placeholder");
-      p.insertBefore(placeholder, e);
+      this.hiddenElements[name] = unattach(element);
       element.detach();
-      this.hiddenElements[name] = {
-        placeholder: placeholder,
-        par: p,
-        el: e
-      };
     } 
   };
 
