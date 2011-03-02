@@ -188,6 +188,13 @@ var LiveView;
     });
   };
 
+  LiveViewCollection.prototype.forEvery = function(fn) {
+    each(this.collection, function(i, view) {
+      fn(view);
+    });
+    this.on("add", fn);
+  };
+
   //detach all elements from the dom, to prepare to reorder
   //them
   LiveViewCollection.prototype.detachAll = function() {

@@ -258,6 +258,25 @@
 
     assertEquals("Variable was not set", $(".things li:nth-child(1) .variable").html(), "A variable"); 
   }; 
+  ViewTest.prototype.testForEvery = function() {
+    /*:DOC += <ul class = "things">
+                  <li class = "thing">
+                    <span class = "variable"></span>
+                  </li>
+                </ul>
+              */
+    expectAsserts(3);
+    var template = new LiveView(".things", {
+      "things": [{"variable": "A variable"}]
+    });
+
+    template.things.forEvery(function(view) {
+      assertTrue("Was not called", true);
+    });
+
+    template.things.add({"variable": "blah"});
+    template.things.add({"variable": "blah"});
+  }; 
 
 }());
 
