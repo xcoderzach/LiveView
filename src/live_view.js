@@ -125,6 +125,10 @@ var LiveView;
     this.context.detach();
   };
 
+  LiveView.prototype.attach = function(element) {
+    this.context.appendTo(element);
+  };
+
   LiveView.prototype.attach = function(container) {
     container.append(this.context);
   };
@@ -186,13 +190,31 @@ var LiveView;
     });
   };
 
-  //detach all event listeners but keep associated jquery data
+  //detach all elements from the dom, to prepare to reorder
+  //them
   LiveViewCollection.prototype.detachAll = function() {
-    var old = this.collection.splice(0);
-    each(old, function(i, item) {
-      item.detach();
+    each(this.collection, function(i, view) {
+      view.detach();
     });
-    return old;
+  };
+
+  LiveViewCollection.prototype.attachAll = function() {
+    each(this.collection, function(i, view) {
+      view.attach(this.container);
+    }, this);
+  };
+
+  LiveViewCollection.prototype.reorder = function(newOrder) {
+    var newCollection = [],
+        i = 0,
+        index;
+    this.detachAll();
+    for(i = 0 ; i < newOrder.length ; i++) {
+      index = newOrder[i];
+      newCollection[i] = this.collection[index];
+    }
+    this.collection = newCollection;
+    this.attachAll();
   };
 
   // add an item to the collection if the collection is sorted
