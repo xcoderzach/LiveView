@@ -67,23 +67,6 @@
     assertEquals("Not deleted", 0, $("#templateDelete .thing .variable").length);
   }; 
 
-  ViewTest.prototype.testGetById = function() {
-    /*:DOC += <div id = "templateWitIds">
-                <ul class = "things">
-                  <li class = "thing">
-                    <span class = "variable"></span>
-                  </li>
-                </ul>
-              </div>*/
-    var template = new LiveView($("#templateWitIds"), {
-      "things": [{"variable": "A variable", "id": "ac23f"}, 
-                 {"variable": "Another variable", "id": "5c139"}]
-    });
-
-    var item = template.things.get("id", "ac23f");
-    assertEquals("Got the right element", "ac23f", item.data.id);
-  }; 
-
   ViewTest.prototype.testHidingElement = function() {
     /*:DOC += <div id = "template">
                 <span class = "hideme"></span>
@@ -139,18 +122,6 @@
       }
     }
   };  
-
-  ViewTest.prototype.testDataDoesntGetOverwrittenWhenAttributeIsUpdated = function() {
-    /*:DOC += <div id = "template">
-                <a class = "name"></a>
-              </div> */ 
-    var template = new LiveView($("#template"), {name: "Zach Smith"});
-    template.set("name", {href: "mukari.com"});
-
-    assertEquals("Data got clobbered", "mukari.com", template.data.name.href);
-    assertEquals("Data got clobbered", "Zach Smith", template.data.name);  
-    assertEquals("Data got clobbered", "Zach Smith", template.data.name.content);  
-  };
 
   ViewTest.prototype.testSettingHiddenElement = function() {
     /*:DOC += <div id = "template">

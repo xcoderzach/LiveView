@@ -52,7 +52,6 @@ var LiveView;
   LiveView = function(template, data) {
     this.context = $(template);
     this.hiddenElements = {};
-    this.data = {};
     each(data, function(key, value) { 
       if(isArray(value)) {
         this[key] = new LiveViewCollection(this.getElementFromName(key, this.context), value);
@@ -72,7 +71,7 @@ var LiveView;
     return elements;
   };
 
-  // Toggles whether a named item is visible on the page
+  // Toggles whether a named item is attached on the page
   LiveView.prototype.toggle = function(name) {
     if(this.hiddenElements[name]) {
       this.set(name, true);
@@ -96,7 +95,6 @@ var LiveView;
   // Sets the values of named element to value, also 
   // can take an object of name value pairs to bulk set
   LiveView.prototype.set = function(name, value) {
-
     if(arguments.length !== 2) {
       each(name, this.set, this);
     } else {
@@ -119,9 +117,6 @@ var LiveView;
           element.attr(key, value);
         }
       }, this);
-
-      this.data[name] = this.data[name] || {toString: function() { return this.content || ""; }};
-      merge(this.data[name], value);
     }
   };
 
@@ -154,18 +149,7 @@ var LiveView;
   // if two, returns first element with data
   // where key arg1 === arg2
   LiveViewCollection.prototype.get = function(index) {
-    var i;
-    if(arguments.length === 2) {
-      var field = arguments[0];
-      var value = arguments[1];
-      for(i = 0 ; i < this.collection.length ; i++) {
-        if(this.collection[i].data[field].content === value) {
-          return this.collection[i];
-        }
-      }
-    } else {
       return this.collection[index];
-    }
   };
 
   // number of live views in this collection
