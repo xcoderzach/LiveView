@@ -146,38 +146,6 @@ I have a list of blog posts, how do I show all of them?
 
   That's it, consider it block'd.
 
-So I've got these blocks, but they're in the wrong order! 
-=========================================================
-
-  Then sort them!
-
-     <div id = "sort">
-      <ul class = "numbers">
-        <li class = "number">
-          <div class = "digits"></div>
-        </li>
-      </ul>
-    </div>
-    
-  Some JS:
-
-    var view = new LiveView("#list", {
-      numbers: [{digits: 2}, 
-                {digits: 1},
-                {digits: 3}]
-    }); 
-
-    view.numbers.sortBy("digits");
-    //or the other direction
-    view.numbers.sortBy("digits", true);
-
-  The best part about sorting, is that lists stay sorted!
-
-    view.numbers.add({digits: 4});
-    view.numbers.add({digits: 0});
-
-  These will be put in their proper order!
-
 License
 =======
 
@@ -190,10 +158,9 @@ TODO
    "things.afterCreate", "name.beforeRemove", etc or just a afterUpdate
    beforeUpdate type thing which passes in a name and an element
 2. Use some kind of document generator/comment format
-2. Serialization: "package up" the current state so we can transport it from
+3. Serialization: "package up" the current state so we can transport it from
    the server.
-2. Implement limit
-3. Open Source it
-4. have limits be a data-attrib? maybe? or not?
-5. forms, do we want to do somethin wif em?
-6. shorthand for just setting attributes "name.href" "name#href" "name|href"?
+4. Open Source it
+5. have limits/sorting/formats be a data-attrib? maybe? or not? Dateformats for example??????
+6. forms, do we want to do somethin wif em?
+7. shorthand for just setting attributes "name.href" "name#href" "name|href"?
