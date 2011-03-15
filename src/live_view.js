@@ -226,27 +226,37 @@ var LiveView;
     this.attachAll();
   };
 
-  // add an item to the collection if the collection is sorted
-  // adds it in the right place, otherwise add it at the end
+  // add it at the end
   // return a the new liveView when completed
-  LiveViewCollection.prototype.create = function(data) {
+  LiveViewCollection.prototype.create = function(data, index) {
     var element,
         view;
+
     if(!isArray(data)) {
       element = this.template.clone(true);
       view = new LiveView(element, data);
 
-      this.add(view);
+      if(index === undefined) {
+        this.append(view);
+      } else {
+        this.insert(view, index);
+      }
       return view;
     } else {
       each(data, function(i, item) { this.create(item); }, this);
     }
   };
 
-  LiveViewCollection.prototype.add = function(view) {
+  LiveViewCollection.prototype.append = function(view) {
     this.container.append(view.context.detach());
     this.collection.push(view);
     this.emit("add", view);
   };
+
+  LiveViewCollection.prototype.insert = function(view, index) {
+    view.context.detach().insertBefore(this.container.children()[index]);
+    this.collection.splice(index, 0, view);
+    this.emit("add", view);
+  }; 
 
 }(jQuery));

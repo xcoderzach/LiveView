@@ -34,6 +34,23 @@
     assertEquals("Variable was not set", $("#templateIterable li:nth-child(2) .variable").html(), "A value");
   }; 
 
+  ViewTest.prototype.testAddIterable = function() {
+    /*:DOC += <div id = "templateIterable">
+                <ul class = "things">
+                  <li class = "thing">
+                    <span class = "variable"></span>
+                  </li>
+                </ul>
+              </div>*/
+    var template = new LiveView("#templateIterable", {
+      "things": [{"variable": "A variable"},{"variable": "A variable"}]
+    });
+
+    template.things.create({"variable": "An inserted variable"}, 0);
+
+    assertEquals("Variable was not set", $("#templateIterable li:nth-child(1) .variable").html(), "An inserted variable");
+  };   
+
   ViewTest.prototype.testUpdateIterable = function() {
     /*:DOC += <div id = "templateCollection">
                 <ul class = "things">
@@ -295,7 +312,7 @@
 
     var notherthing = new LiveView(".notherthing", {"value":"val"});
 
-    template.things.add(notherthing);
+    template.things.append(notherthing);
 
     assertEquals("Wrong value", "val", $(".things .notherthing .value").html());
   }; 
