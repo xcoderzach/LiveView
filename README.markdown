@@ -1,3 +1,7 @@
+LiveView v0.1
+=============
+Like templates, except alive!
+
 Disclaimer
 ==========
 
@@ -6,7 +10,6 @@ Disclaimer
 
 Why?
 ====
-
 
   I wanted a way to have templates that could be defined in semantic markup
   and, given JSON could generate my markup.
@@ -140,7 +143,7 @@ I have a list of blog posts, how do I show all of them?
 
     // We can add them on the fly too!
 
-    var post = view.posts.add({title: "Incoming Post"});
+    var post = view.posts.append({title: "Incoming Post"});
     //we can even change it!
     post.set("title", "Changed");
 
@@ -173,8 +176,8 @@ So I've got these blocks, but they're in the wrong order!
 
   The best part about sorting, is that lists stay sorted!
 
-    view.numbers.add({digits: 4});
-    view.numbers.add({digits: 0});
+    view.numbers.create({digits: 4});
+    view.numbers.create({digits: 0});
 
   These will be put in their proper order!
 
