@@ -327,9 +327,6 @@
                     <span class = "awesomeo"></span>
                   </li> 
                 </ul>
-                <div class = "notherthing">
-                  <div class = "value"></div>
-                </div>
               </div>
             */ 
 
@@ -340,6 +337,23 @@
 
     assertEquals("Wrong value", "cool thing", $(".things .thing.cool .coolio").html())
     assertEquals("Wrong value", "awesome thing", $(".things .thing.awesome .awesomeo").html())
+
+  }
+
+  ViewTest.prototype.testArrayShorthand = function() {
+    /*:DOC += <div class = "template">
+                 <ul class = "things">
+                  <li class = "value">
+                  </li>
+                </ul>
+            */ 
+
+    var template = new LiveView(".things", {
+      "things": [ "one", "two" ]
+    })
+
+    assertEquals("Wrong value", "one", $(".things .value:nth-child(1)").html())
+    assertEquals("Wrong value", "two", $(".things .value:nth-child(2)").html())
 
   }
 }())

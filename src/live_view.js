@@ -51,6 +51,10 @@ var LiveView
   LiveView = function(template, data) {
     this.context = $(template)
     this.hiddenElements = {}
+    //shorthand for an array of strings
+    if(typeof data === "string") {
+      data = {value: data}
+    }
     each(data, function(key, value) { 
       if(isArray(value)) {
         this[key] = new LiveViewCollection(this.getElementFromName(key, this.context), value)
