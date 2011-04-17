@@ -316,5 +316,31 @@
 
     assertEquals("Wrong value", "val", $(".things .notherthing .value").html())
   } 
+
+  ViewTest.prototype.testPolymorphicBlocks = function() {
+    /*:DOC += <div class = "template">
+                 <ul class = "things">
+                  <li class = "cool thing">
+                    <span class = "coolio"></span>
+                  </li>
+                  <li class = "awesome thing">
+                    <span class = "awesomeo"></span>
+                  </li> 
+                </ul>
+                <div class = "notherthing">
+                  <div class = "value"></div>
+                </div>
+              </div>
+            */ 
+
+    var template = new LiveView(".things", {
+      "things": [ {"type": "awesome", "awesomeo": "awesome thing"}
+                , {"type": "cool", "coolio": "cool thing"} ]
+    })
+
+    assertEquals("Wrong value", "cool thing", $(".things .thing.cool .coolio").html())
+    assertEquals("Wrong value", "awesome thing", $(".things .thing.awesome .awesomeo").html())
+
+  }
 }())
 

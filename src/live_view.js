@@ -142,9 +142,17 @@ var LiveView
     this.container = container
     this.collection = []
     this.events = {}
-    this.template = $(container.children()[0]).remove()
+    this.templates = container.children().remove()
     this.container.html("")
     this.append(data)
+  }
+
+  LiveViewCollection.prototype.getTemplate = function(type) {
+    if(!type) {
+      return $(this.templates[0])
+    } else {
+      return $(this.templates.filter("." + type)[0])
+    }
   }
 
   // If one argument, returns view at that index
@@ -233,7 +241,8 @@ var LiveView
       , view
 
     if(!isArray(data)) {
-      element = this.template.clone(true)
+      type = data.type || "";
+      element = this.getTemplate(type).clone(true)
       view = new LiveView(element, data)
 
       if(index === undefined) {
