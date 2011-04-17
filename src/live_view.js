@@ -145,7 +145,7 @@ var LiveView;
     this.events = {};
     this.template = $(container.children()[0]).remove();
     this.container.html("");
-    this.create(data);
+    this.append(data);
   };
 
   // If one argument, returns view at that index
@@ -228,7 +228,7 @@ var LiveView;
 
   // add it at the end
   // return a the new liveView when completed
-  LiveViewCollection.prototype.create = function(data, index) {
+  LiveViewCollection.prototype.insert = function(data, index) {
     var element,
         view;
 
@@ -237,23 +237,31 @@ var LiveView;
       view = new LiveView(element, data);
 
       if(index === undefined) {
-        this.append(view);
+        this.appendView(view);
       } else {
-        this.insert(view, index);
+        this.insertView(view, index);
       }
       return view;
     } else {
-      each(data, function(i, item) { this.create(item); }, this);
+      each(data, function(i, item) { this.append(item); }, this);
     }
   };
 
-  LiveViewCollection.prototype.append = function(view) {
+  LiveViewCollection.prototype.append = function(data) {
+    if(!isArray(data)) {
+      return this.insert(data);
+    } else {
+      each(data, function(i, item) { this.append(item); }, this);
+    }
+  }; 
+
+  LiveViewCollection.prototype.appendView = function(view) {
     this.container.append(view.context.detach());
     this.collection.push(view);
     this.emit("add", view);
   };
 
-  LiveViewCollection.prototype.insert = function(view, index) {
+  LiveViewCollection.prototype.insertView = function(view, index) {
     view.context.detach().insertBefore(this.container.children()[index]);
     this.collection.splice(index, 0, view);
     this.emit("add", view);

@@ -28,7 +28,7 @@
       "things": [{"variable": "A variable"}]
     });
 
-    template.things.create({"variable": "A value"});
+    template.things.append({"variable": "A value"});
 
     assertEquals("Variable was not set", $("#templateIterable li:nth-child(1) .variable").html(), "A variable");
     assertEquals("Variable was not set", $("#templateIterable li:nth-child(2) .variable").html(), "A value");
@@ -46,8 +46,7 @@
       "things": [{"variable": "A variable"},{"variable": "A variable"}]
     });
 
-    template.things.create({"variable": "An inserted variable"}, 0);
-
+    template.things.insert({"variable": "An inserted variable"}, 0);
     assertEquals("Variable was not set", $("#templateIterable li:nth-child(1) .variable").html(), "An inserted variable");
   };   
 
@@ -63,7 +62,7 @@
       "things": []
     });
 
-    var thing = template.things.create({"variable": "value"});
+    var thing = template.things.append({"variable": "value"});
     thing.set({"variable": "newValue"});
     assertEquals("Variable was not set", $("#templateCollection .variable").html(), "newValue");
   }; 
@@ -210,7 +209,7 @@
       assertEquals("Thing added", "A value", $(".variable", view.context).html());
     });
 
-    template.things.create({"variable": "A value"});
+    template.things.append({"variable": "A value"});
   };
 
   ViewTest.prototype.testRemoveEvent = function() {
@@ -291,9 +290,10 @@
       assertTrue("Was not called", true);
     });
 
-    template.things.create({"variable": "blah"});
-    template.things.create({"variable": "blah"});
+    template.things.append({"variable": "blah"});
+    template.things.append({"variable": "blah"});
   }; 
+
   ViewTest.prototype.testAddDifferentType = function() {
     /*:DOC += <div class = "template">
                 <ul class = "things">
@@ -305,14 +305,14 @@
                   <div class = "value"></div>
                 </div>
               </div>
-              */
+            */
     var template = new LiveView(".things", {
       "things": [{"variable": "A variable"}]
     });
 
     var notherthing = new LiveView(".notherthing", {"value":"val"});
 
-    template.things.append(notherthing);
+    template.things.appendView(notherthing);
 
     assertEquals("Wrong value", "val", $(".things .notherthing .value").html());
   }; 
