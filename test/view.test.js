@@ -274,6 +274,7 @@
 
     assertEquals("Variable was not set", $(".things li:nth-child(1) .variable").html(), "A variable") 
   } 
+
   ViewTest.prototype.testForEvery = function() {
     /*:DOC += <ul class = "things">
                   <li class = "thing">
@@ -354,7 +355,39 @@
 
     assertEquals("Wrong value", "one", $(".things .value:nth-child(1)").html())
     assertEquals("Wrong value", "two", $(".things .value:nth-child(2)").html())
-
   }
+
+  ViewTest.prototype.testMappers = function() {
+    /*:DOC += <div class = "template">
+                 <div class = "things">
+                  <a class = "thing"></a>
+                </div>
+            */ 
+
+    var template = new LiveView(".things", {
+      "things": 
+        [{ "thing":
+           { content: "one"
+           , mapper: function(value) {
+               return { content: "thing_" + value.content, href: "stuff.com/" + value.content }
+             }
+           }
+        }
+        , { "thing":
+           { content: "two"
+           , mapper: function(value) {
+               return { content: "thing_" + value.content, href: "stuff.com/" + value.content }
+             }
+           }
+        }]
+    })
+
+    assertEquals("Wrong value", "thing_one", $(".things .thing:nth-child(1)").html())
+    assertEquals("Wrong value", "thing_two", $(".things .thing:nth-child(2)").html())
+
+    assertEquals("Wrong value", "stuff.com/one", $(".things .thing:nth-child(1)").attr("href"))
+    assertEquals("Wrong value", "stuff.com/two", $(".things .thing:nth-child(2)").attr("href"))
+  }
+
 }())
 
