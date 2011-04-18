@@ -106,6 +106,11 @@ var LiveView
     } else {
       var element = this.getElementFromName(name, this.context)
 
+      if(value && value.hasOwnProperty("mapper")) {
+        value = value.mapper(value)
+        delete value.mapper
+      }
+
       if(typeof value == "boolean") {
         value = {visible: value}
       } else if(typeof value !== "object") {
