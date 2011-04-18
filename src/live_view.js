@@ -106,7 +106,7 @@ var LiveView
     } else {
       var element = this.getElementFromName(name, this.context)
 
-      if(value.hasOwnProperty("mapper")) {
+      if(value && value.hasOwnProperty("mapper")) {
         value = value.mapper(value)
         delete value.mapper
       }
