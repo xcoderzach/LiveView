@@ -90,54 +90,9 @@
               </div>*/
     var template = new LiveView($("#template"), {"hideme": false, "andme": false})
 
-    assertEquals("Elements not hidden", 0, $("#template").children().length)
+    assertEquals("Elements were removed not hidden", 2, $("#template span").length)
+    assertEquals("Elements not hidden", 0, $("#template span:visible").length)
   } 
-
-  ViewTest.prototype.testHidingMaintainsOrder = function() {
-    /*:DOC += <div id = "template">
-                <span class = "hideme"></span>
-                <span class = "andme"></span>
-                <span class = "alsome"></span>
-              </div>*/
-
-    var template = new LiveView("#template", {"hideme": 1, "andme": 2, "alsome": 3})
-
-    var visible = false
-
-    var setList = [ function() { template.set("hideme", visible) },
-                    function() { template.set("andme", visible) },
-                    function() { template.set("alsome", visible) } ]
-    //gunna test all permuations of hiding and unhiding, so I can be sure it works!
-    var p = [[1, 2, 3],
-             [1, 3, 2],
-             [2, 1, 3],
-             [2, 3, 1],
-             [3, 1, 2],
-             [3, 2, 1]]
-    var oldHtml
-    for(var i = 0 ; i < 6 ; i++) {
-      for(var j = 0 ; j < 6 ; j++) {
-        setP = p[i]
-        unsetP = p[j]
-
-        oldHtml = $("#template").html()
-        //hide them!
-        visible = false
-        setList[setP[0] -1]()
-        setList[setP[1] -1]()
-        setList[setP[2] -1]()
-        // make sure they're hidden
-        assertEquals("Elements not hidden", 0, $("#template").children().length)
-        visible = true
-        // unhide them!
-        setList[unsetP[0] -1]()
-        setList[unsetP[1] -1]()
-        setList[unsetP[2] -1]()
-        //like we never touched it...KABLAM
-        assertEquals("Html was modified", oldHtml, $("#template").html())
-      }
-    }
-  }  
 
   ViewTest.prototype.testSettingHiddenElement = function() {
     /*:DOC += <div id = "template">
