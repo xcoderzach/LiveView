@@ -211,38 +211,6 @@ var LiveView
     this.on("add", fn)
   }
 
-  //detach all elements from the dom, to prepare to reorder
-  //them
-  LiveViewCollection.prototype.detachAll = function() {
-    each(this.collection, function(i, view) {
-      view.detach()
-    })
-  }
-
-  LiveViewCollection.prototype.attachAll = function() {
-    each(this.collection, function(i, view) {
-      view.attach(this.container)
-    }, this)
-  }
-
-  LiveViewCollection.prototype.reorder = function(newOrder) {
-    var newCollection = []
-      , i = 0
-      , index
-
-    this.detachAll()
-    for(i = 0 ; i < newOrder.length ; i++) {
-      index = newOrder[i]
-      newCollection[i] = this.collection[index]
-
-      if(index !== i) {
-        this.emit("move", this.collection[index], index, i)
-      }
-    }
-    this.collection = newCollection
-    this.attachAll()
-  }
-
   // add it at the end
   // return a the new liveView when completed
   LiveViewCollection.prototype.insert = function(data, index) {

@@ -171,27 +171,6 @@
     assertEquals("Variable was not set", $("#template .variable").attr("class"), "variable add cool") 
   } 
 
-  ViewTest.prototype.testReorderElements = function() {
-    /*:DOC += <div id = "templateIterable">
-                <ul class = "things">
-                  <li class = "thing">
-                    <span class = "variable"></span>
-                  </li>
-                </ul>
-              </div>*/
-    var template = new LiveView("#templateIterable", {
-      "things": [{"variable": 1},
-                 {"variable": 2},
-                 {"variable": 3}]
-    })  
-
-    template.things.reorder([2,0,1])
-
-    assertEquals("Variable was not set", 3, $("#templateIterable li:eq(0) .variable").html())
-    assertEquals("Variable was not set", 1, $("#templateIterable li:eq(1) .variable").html())
-    assertEquals("Variable was not set", 2, $("#templateIterable li:eq(2) .variable").html())
-  }
-
   ViewTest.prototype.testCreateEvent = function() {
     /*:DOC += <div id = "templateIterable">
                 <ul class = "things">
