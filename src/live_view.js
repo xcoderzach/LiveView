@@ -23,29 +23,7 @@ var LiveView
   var isArray = Array.isArray || function (array) {
     return Object.prototype.toString.call(array) === '[object Array]'
   }
-
-  //put an element back after it has been removed
-  function reattach(element, parent, placeholder) {
-    parent.insertBefore(element, placeholder.nextSibling)
-    parent.removeChild(placeholder)
-  } 
-
-  function unattach(element, parent) {
-    var p = element.parent().get(0)
-      , e = element.get(0)
-      , placeholder = document.createComment("placeholder")
-    p.insertBefore(placeholder, e)  
-
-    return {
-      placeholder: placeholder
-    , par: p
-    , el: e
-    , reattach: function() {
-        reattach(e, p, placeholder)
-      }
-    }
-  }
-  
+ 
   // Contstructs a new live view from a template (css selector, or html)
   // and, optional data.
   LiveView = function(template, data) {
@@ -88,14 +66,13 @@ var LiveView
 
   LiveView.prototype.setVisible = function(name, value) {
     var element = this.getElementFromName(name, this.context)
-    if(this.hiddenElements[name] && value !== false && value.visible !== false) {
-      this.hiddenElements[name].reattach()
-      delete this.hiddenElements[name]
-    } 
+      , value
+    //anything but strict false
     if (value === false) {
-      this.hiddenElements[name] = unattach(element)
-      element.detach()
-    } 
+      $(element).hide()
+    } else {
+      $(element).show()
+    }
   }
 
   // Sets the values of named element to value, also 
