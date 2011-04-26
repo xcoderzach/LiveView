@@ -28,18 +28,27 @@ var LiveView
   // and, optional data.
   LiveView = function(template, data) {
     this.context = $(template)
-    this.hiddenElements = {}
+    this.collections = {}
     //shorthand for an array of strings
     if(typeof data === "string") {
       data = {value: data}
     }
     each(data, function(key, value) { 
       if(isArray(value)) {
-        this[key] = new LiveViewCollection(this.getElementFromName(key, this.context), value)
+        this.collections[key] = this[key] = new LiveViewCollection(this.getElementFromName(key, this.context), value)
       } else {
         this.set(key, value)
       }
     }, this)
+  }
+
+  LiveView.prototype.serialize = function() {
+    return {context: $("<div>").append(this.context.clone()).html()}
+  }
+
+  LiveView.unserialize = function(serialized) {
+    var newView = new LiveView($(serialized.context), {})
+    return newView
   }
 
   // Given the name of the data a user passed in, return an element

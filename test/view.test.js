@@ -259,8 +259,11 @@
       "things": [ "one", "two" ]
     })
 
+    template.things.append("three")
+
     assertEquals("Wrong value", "one", $(".things .value:nth-child(1)").html())
     assertEquals("Wrong value", "two", $(".things .value:nth-child(2)").html())
+    assertEquals("Wrong value", "three", $(".things .value:nth-child(3)").html())
   }
 
   ViewTest.prototype.testMappers = function() {
@@ -295,4 +298,26 @@
     assertEquals("Wrong value", "stuff.com/two", $(".things .thing:nth-child(2)").attr("href"))
   }
 
+
+  ViewTest.prototype.testSerializeThenRead = function() {
+         /*:DOC += <div class = "template">
+                 <ul class = "things">
+                  <li class = "value">
+                  </li>
+                </ul>
+            */ 
+
+    var template = new LiveView(".things", { "things": [ "one", "two" ] })
+      , serialized = template.serialize()
+
+    $(".things").remove()
+    template = LiveView.unserialize(serialized)
+    $(".template").append(template.context)
+
+
+    assertEquals("Wrong value", "one", $(".things .value:nth-child(1)").html())
+    assertEquals("Wrong value", "two", $(".things .value:nth-child(2)").html())
+  }
+
 }())
+
