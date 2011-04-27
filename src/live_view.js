@@ -28,6 +28,7 @@ var LiveView
   // and, optional data.
   LiveView = function(template, data) {
     this.context = $(template)
+    this.collections = {}
     if(this.context.attr("data-liveview") === "true") {
       this.bootstrap()
     } else {
@@ -39,13 +40,19 @@ var LiveView
     }
     each(data, function(key, value) { 
       if(isArray(value)) {
-        this[key] = new LiveViewCollection(this.getElementFromName(key, this.context), value, key)
+        this.collections[key] = this[key] = new LiveViewCollection(this.getElementFromName(key, this.context), value, key)
       } else {
         this.set(key, value)
       }
     }, this)
   }
 
+  LiveView.prototype.serialize = function() {
+    this.context.attr("data-liveview", true)
+    each(this.collections, function(key, collection) {
+      collection.serialize()
+    })
+  }  
   LiveView.prototype.bootstrap = function() {
     var that = this
     this.context.removeAttr("data-liveview")
@@ -141,6 +148,7 @@ var LiveView
     this.container = container
     this.collection = []
     this.events = {}
+    this.name = name
     if(container.attr("data-liveview-collection")) {
       this.bootstrap()
     } else {
@@ -148,6 +156,14 @@ var LiveView
       this.container.html("")
     }
     this.append(data)
+  }
+
+  LiveViewCollection.prototype.serialize = function() {
+    this.container.attr("data-liveview-collection", this.name)
+    this.container.append($('<div class = "liveview-templates" style = "display:none;">').append(this.templates))
+    each(this.collection, function(index, view) {
+      view.serialize()
+    })
   }
 
   LiveViewCollection.prototype.bootstrap = function() {

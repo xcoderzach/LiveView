@@ -298,6 +298,26 @@
     assertEquals("Wrong value", "stuff.com/two", $(".things .thing:nth-child(2)").attr("href"))
   }
 
+   ViewTest.prototype.testSerializing = function() {
+    /*:DOC += <div class = "template">
+                 <ul class = "things">
+                  <li class = "thing">
+                    <div class = "woot"></div>
+                  </li>
+                </ul>
+            */                
+    var template = new LiveView($(".template"), {things: [{woot: "w00t"}]})
+
+    template.serialize()
+
+    assertEquals("Wrong value", "true", $(".template").attr("data-liveview"))
+    assertEquals("Wrong value", "things", $(".things").attr("data-liveview-collection"))
+    assertEquals("Wrong value", "true", $(".things .thing").attr("data-liveview"))
+    assertEquals("Wrong value", 1, $(".liveview-templates").length)
+
+    jstestdriver.console.log($(".template").html())
+  } 
+
   ViewTest.prototype.testUnserializing = function() {
     /*:DOC += <div class = "template" data-liveview="true">
                  <ul class = "things" data-liveview-collection="things">
