@@ -28,18 +28,38 @@ var LiveView
   // and, optional data.
   LiveView = function(template, data) {
     this.context = $(template)
-    this.hiddenElements = {}
+    this.collections = {}
+    if(this.context.attr("data-liveview") === "true") {
+      this.bootstrap()
+    } else {
+      this.context.attr("data-liveview", true) 
+    }
     //shorthand for an array of strings
     if(typeof data === "string") {
       data = {value: data}
     }
     each(data, function(key, value) { 
       if(isArray(value)) {
-        this[key] = new LiveViewCollection(this.getElementFromName(key, this.context), value)
+        this.collections[key] = this[key] = new LiveViewCollection(this.getElementFromName(key, this.context), value, key)
       } else {
         this.set(key, value)
       }
     }, this)
+  }
+
+  LiveView.prototype.serialize = function() {
+    this.context.attr("data-liveview", true)
+    each(this.collections, function(key, collection) {
+      collection.serialize()
+    })
+  }  
+  LiveView.prototype.bootstrap = function() {
+    var that = this
+    this.context.removeAttr("data-liveview")
+    this.context.children("[data-liveview-collection]").each(function(index, element) {
+      var name = $(element).attr("data-liveview-collection")
+      that[name] = new LiveViewCollection($(element), [], name)
+    })
   }
 
   // Given the name of the data a user passed in, return an element
@@ -124,13 +144,35 @@ var LiveView
     container.append(this.context)
   }
 
-  var LiveViewCollection = function(container, data) {
+  var LiveViewCollection = function(container, data, name) {
     this.container = container
     this.collection = []
     this.events = {}
-    this.templates = container.children().remove()
-    this.container.html("")
+    this.name = name
+    if(container.attr("data-liveview-collection")) {
+      this.bootstrap()
+    } else {
+      this.templates = container.children().remove()
+      this.container.html("")
+    }
     this.append(data)
+  }
+
+  LiveViewCollection.prototype.serialize = function() {
+    this.container.attr("data-liveview-collection", this.name)
+    this.container.append($('<div class = "liveview-templates" style = "display:none;">').append(this.templates))
+    each(this.collection, function(index, view) {
+      view.serialize()
+    })
+  }
+
+  LiveViewCollection.prototype.bootstrap = function() {
+    var that = this
+    this.container.removeAttr("data-liveview-collection")
+    this.templates = $(".liveview-templates", this.container).remove().children().remove()
+    this.container.children("[data-liveview]").each(function(index, element) {
+      that.appendView(new LiveView(element, {}))
+    })
   }
 
   LiveViewCollection.prototype.getTemplate = function(type) {

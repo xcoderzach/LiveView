@@ -259,8 +259,11 @@
       "things": [ "one", "two" ]
     })
 
+    template.things.append("three")
+
     assertEquals("Wrong value", "one", $(".things .value:nth-child(1)").html())
     assertEquals("Wrong value", "two", $(".things .value:nth-child(2)").html())
+    assertEquals("Wrong value", "three", $(".things .value:nth-child(3)").html())
   }
 
   ViewTest.prototype.testMappers = function() {
@@ -295,4 +298,46 @@
     assertEquals("Wrong value", "stuff.com/two", $(".things .thing:nth-child(2)").attr("href"))
   }
 
+   ViewTest.prototype.testSerializing = function() {
+    /*:DOC += <div class = "template">
+                 <ul class = "things">
+                  <li class = "thing">
+                    <div class = "woot"></div>
+                  </li>
+                </ul>
+            */                
+    var template = new LiveView($(".template"), {things: [{woot: "w00t"}]})
+
+    template.serialize()
+
+    assertEquals("Wrong value", "true", $(".template").attr("data-liveview"))
+    assertEquals("Wrong value", "things", $(".things").attr("data-liveview-collection"))
+    assertEquals("Wrong value", "true", $(".things .thing").attr("data-liveview"))
+    assertEquals("Wrong value", 1, $(".liveview-templates").length)
+
+    jstestdriver.console.log($(".template").html())
+  } 
+
+  ViewTest.prototype.testUnserializing = function() {
+    /*:DOC += <div class = "template" data-liveview="true">
+                 <ul class = "things" data-liveview-collection="things">
+                  <li class = "thing" data-liveview="true">
+                    <div class = "woot">existing w00t</div>
+                  </li>
+                  <div class = "liveview-templates">
+                    <li class = "thing">
+                      <div class = "woot"></div>
+                    </li>
+                  </div>
+                </ul>
+            */                
+    var template = new LiveView($(".template"), {})
+
+    template.things.append({woot: "w00t"})
+    template.things.append({woot: "w00t2"})
+
+    assertEquals("Wrong value", "existing w00t", $(".things .thing:nth-child(1) .woot").html())
+    assertEquals("Wrong value", "w00t", $(".things .thing:nth-child(2) .woot").html())
+    assertEquals("Wrong value", "w00t2", $(".things .thing:nth-child(3) .woot").html())
+  }
 }())
