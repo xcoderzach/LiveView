@@ -29,7 +29,7 @@
   LiveView = function(template, data) {
     this.context = $(template)
     this.collections = {}
-    data = data || {}
+    this.data = data = data || {}
     this._id = data._id
     this.context.attr("data-id", this._id) 
     if(this.context.attr("data-liveview") === "true") {
@@ -41,6 +41,9 @@
     if(typeof data === "string") {
       data = {value: data}
     }
+
+    this.getAttributesWithVariables()
+
     each(data, function(key, value) { 
       if(isArray(value)) {
         this.collections[key] = this[key] = new LiveViewCollection(this.getElementFromName(key, this.context), value, key)
@@ -64,6 +67,10 @@
       var name = $(element).attr("data-liveview-collection")
       that[name] = new LiveViewCollection($(element), [], name)
     })
+  }
+
+  LiveView.prototype.getAttributesWithVariables = function() {
+    this.variableAttributeElements = $("[data-var]", this.context)
   }
 
   // Given the name of the data a user passed in, return an element
@@ -107,29 +114,35 @@
     } else {
       var element = this.getElementFromName(name, this.context)
 
-      if(value && value.hasOwnProperty("mapper")) {
-        value = value.mapper(value)
-        delete value.mapper
-      }
-
       if(typeof value == "boolean") {
         value = {visible: value}
       } else if(typeof value !== "object") {
         value = {content: value}
       } 
 
-      each(value, function(key, value) {
-        if(key === "content") {
-          element.html(value)
-        } else if(key === "visible") {
-          this.setVisible(name, value)
-        } else if(key === "class") {
-          element.attr("class", name + " " + value)
-        } else {
-          element.attr(key, value)
+      this.variableAttributeElements.each(function(i, el) {
+        for (var i = 0; i < el.attributes.length; i++) {
+          var attrib = el.attributes[i];
+          if (attrib.specified == true) {
+            var regex = new RegExp("#{" + name + "}","g")
+            attrib.value = attrib.value.replace(regex, value.content)
+          }
         }
-      }, this)
+
+      })
     }
+
+    each(value, function(key, value) {
+      if(key === "content") {
+        element.html(value)
+      } else if(key === "visible") {
+        this.setVisible(name, value)
+      } else if(key === "class") {
+        element.attr("class", name + " " + value)
+      } else {
+        element.attr(key, value)
+      }
+    }, this)
   }
 
   LiveView.prototype.remove = function() {
