@@ -4,7 +4,7 @@
 
   ViewTest.prototype.testSetVariable = function() {
     /*:DOC += <div id = "template"><span class = "variable"></span></div>*/
-    var view = new LiveView($("#template").get(0))
+    var view = new LiveView("#template")
     view.set("variable", "value")
     assertEquals("Variable was not set", $("#template .variable").html(), "value")
   }
@@ -76,10 +76,10 @@
                 </ul>
               </div>*/
     var template = new LiveView($("#templateDelete"), {
-      "things": [{"variable": "A variable"}]
+      "things": [{"variable": "A variable", _id: "identifier"}]
     })
 
-    template.things.remove(0)
+    template.things.remove("identifier")
     assertEquals("Not deleted", 0, $("#templateDelete .thing .variable").length)
   } 
 
@@ -126,47 +126,6 @@
     assertEquals("Variable was not set", $("#template .variable").attr("class"), "variable add cool") 
   } 
 
-  ViewTest.prototype.testCreateEvent = function() {
-    /*:DOC += <div id = "templateIterable">
-                <ul class = "things">
-                  <li class = "thing">
-                    <span class = "variable"></span>
-                  </li>
-                </ul>
-              </div>*/
-    expectAsserts(1)
-    var template = new LiveView("#templateIterable", {
-      "things": []
-    })
-
-    template.things.on("add", function(view) {
-      assertEquals("Thing added", "A value", $(".variable", view.context).html())
-    })
-
-    template.things.append({"variable": "A value"})
-  }
-
-  ViewTest.prototype.testRemoveEvent = function() {
-    /*:DOC += <div id = "templateIterable">
-                <ul class = "things">
-                  <li class = "thing">
-                    <span class = "variable"></span>
-                  </li>
-                </ul>
-              </div>*/
-    expectAsserts(1)
-    var template = new LiveView("#templateIterable", {
-      "things": [{"variable": 1},
-                 {"variable": 2},
-                 {"variable": 3}]
-    })
-    template.things.on("remove", function(view) {
-      assertEquals("Thing not removed", 1, $(".variable", view.context).html())
-    })
-
-    template.things.remove(0)
-  } 
-
   ViewTest.prototype.testSelfIsIterable = function() {
     /*:DOC += <ul class = "things">
                   <li class = "thing">
@@ -179,26 +138,6 @@
     })
 
     assertEquals("Variable was not set", $(".things li:nth-child(1) .variable").html(), "A variable") 
-  } 
-
-  ViewTest.prototype.testForEvery = function() {
-    /*:DOC += <ul class = "things">
-                  <li class = "thing">
-                    <span class = "variable"></span>
-                  </li>
-                </ul>
-              */
-    expectAsserts(3)
-    var template = new LiveView(".things", {
-      "things": [{"variable": "A variable"}]
-    })
-
-    template.things.forEvery(function(view) {
-      assertTrue("Was not called", true)
-    })
-
-    template.things.append({"variable": "blah"})
-    template.things.append({"variable": "blah"})
   } 
 
   ViewTest.prototype.testAddDifferentType = function() {
@@ -314,8 +253,6 @@
     assertEquals("Wrong value", "things", $(".things").attr("data-liveview-collection"))
     assertEquals("Wrong value", "true", $(".things .thing").attr("data-liveview"))
     assertEquals("Wrong value", 1, $(".liveview-templates").length)
-
-    jstestdriver.console.log($(".template").html())
   } 
 
   ViewTest.prototype.testUnserializing = function() {

@@ -1,4 +1,4 @@
-var LiveView
+ var LiveView
 
 (function($) {
 
@@ -29,6 +29,9 @@ var LiveView
   LiveView = function(template, data) {
     this.context = $(template)
     this.collections = {}
+    data = data || {}
+    this._id = data._id
+    this.context.attr("data-id", this._id) 
     if(this.context.attr("data-liveview") === "true") {
       this.bootstrap()
     } else {
@@ -53,6 +56,7 @@ var LiveView
       collection.serialize()
     })
   }  
+
   LiveView.prototype.bootstrap = function() {
     var that = this
     this.context.removeAttr("data-liveview")
@@ -147,6 +151,7 @@ var LiveView
   var LiveViewCollection = function(container, data, name) {
     this.container = container
     this.collection = []
+    this.views = {}
     this.events = {}
     this.name = name
     if(container.attr("data-liveview-collection")) {
@@ -161,9 +166,9 @@ var LiveView
   LiveViewCollection.prototype.serialize = function() {
     this.container.attr("data-liveview-collection", this.name)
     this.container.append($('<div class = "liveview-templates" style = "display:none;">').append(this.templates))
-    each(this.collection, function(index, view) {
-      view.serialize()
-    })
+    each(this.collection, function(index, id) {
+      this.views[id].serialize()
+    }, this)
   }
 
   LiveViewCollection.prototype.bootstrap = function() {
@@ -186,8 +191,8 @@ var LiveView
   // If one argument, returns view at that index
   // if two, returns first element with data
   // where key arg1 === arg2
-  LiveViewCollection.prototype.get = function(index) {
-      return this.collection[index]
+  LiveViewCollection.prototype.get = function(id) {
+      return this.views[id]
   }
 
   // number of live views in this collection
@@ -195,39 +200,11 @@ var LiveView
     return this.collection.length
   }
  
-  LiveViewCollection.prototype.remove = function(i) {
-    var view = this.collection.splice(i, 1)[0]
-    this.emit("remove", view)
+  LiveViewCollection.prototype.remove = function(id) {
+    this.collection.splice(this.collection.indexOf(id), 1)
+    var view = this.views[id]
+    delete this.views[id]
     return view.remove()
-  }
-
-  //wipe out everything no more jquery event listeners or associated data
-  LiveViewCollection.prototype.removeAll = function() {
-    var old = this.collection.splice(0)
-    each(old, function(i, item) {
-      item.remove()
-    })
-    return old
-  } 
-
-  LiveViewCollection.prototype.on = function(evt, fn) {
-    this.events[evt] = this.events[evt] || []
-    this.events[evt].push(fn)
-  }
-
-  //returns whether any handlers were called
-  LiveViewCollection.prototype.emit = function(evt) {
-    var args = [].splice.call(arguments, 1)
-    each(this.events[evt], function(i, fn) {
-      fn.apply(null, args)
-    })
-  }
-
-  LiveViewCollection.prototype.forEvery = function(fn) {
-    each(this.collection, function(i, view) {
-      fn(view)
-    })
-    this.on("add", fn)
   }
 
   // add it at the end
@@ -235,16 +212,19 @@ var LiveView
   LiveViewCollection.prototype.insert = function(data, index) {
     var element
       , view
+      , type
+      , id
 
     if(!isArray(data)) {
       type = data.type || "";
+      id = data._id
       element = this.getTemplate(type).clone(true)
       view = new LiveView(element, data)
 
       if(index === undefined) {
-        this.appendView(view)
+        this.appendView(view, id)
       } else {
-        this.insertView(view, index)
+        this.insertView(view, index, id)
       }
       return view
     } else {
@@ -260,16 +240,16 @@ var LiveView
     }
   } 
 
-  LiveViewCollection.prototype.appendView = function(view) {
+  LiveViewCollection.prototype.appendView = function(view, id) {
     this.container.append(view.context.detach())
-    this.collection.push(view)
-    this.emit("add", view)
+    this.collection.push(id)
+    this.views[id] = view
   }
 
-  LiveViewCollection.prototype.insertView = function(view, index) {
+  LiveViewCollection.prototype.insertView = function(view, index, id) {
     view.context.detach().insertBefore(this.container.children()[index])
-    this.collection.splice(index, 0, view)
-    this.emit("add", view)
+    this.collection.splice(index, 0, index)
+    this.views[id] = view
   } 
 
-}(jQuery))
+}(jQuery)) 
