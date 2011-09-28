@@ -205,39 +205,7 @@
     assertEquals("Wrong value", "three", $(".things .value:nth-child(3)").html())
   }
 
-  ViewTest.prototype.testMappers = function() {
-    /*:DOC += <div class = "template">
-                 <div class = "things">
-                  <a class = "thing"></a>
-                </div>
-            */ 
-
-    var template = new LiveView(".things", {
-      "things": 
-        [{ "thing":
-           { content: "one"
-           , mapper: function(value) {
-               return { content: "thing_" + value.content, href: "stuff.com/" + value.content }
-             }
-           }
-        }
-        , { "thing":
-           { content: "two"
-           , mapper: function(value) {
-               return { content: "thing_" + value.content, href: "stuff.com/" + value.content }
-             }
-           }
-        }]
-    })
-
-    assertEquals("Wrong value", "thing_one", $(".things .thing:nth-child(1)").html())
-    assertEquals("Wrong value", "thing_two", $(".things .thing:nth-child(2)").html())
-
-    assertEquals("Wrong value", "stuff.com/one", $(".things .thing:nth-child(1)").attr("href"))
-    assertEquals("Wrong value", "stuff.com/two", $(".things .thing:nth-child(2)").attr("href"))
-  }
-
-   ViewTest.prototype.testSerializing = function() {
+  ViewTest.prototype.testSerializing = function() {
     /*:DOC += <div class = "template">
                  <ul class = "things">
                   <li class = "thing">
@@ -277,4 +245,15 @@
     assertEquals("Wrong value", "w00t", $(".things .thing:nth-child(2) .woot").html())
     assertEquals("Wrong value", "w00t2", $(".things .thing:nth-child(3) .woot").html())
   }
+
+  ViewTest.prototype.testAttributeInterpolation = function() {
+    /*:DOC += <div class = "template">
+                <a href = "/things/#{id}" data-var></a>
+              </div>
+            */                
+    var template = new LiveView($(".template"), {id: 123})
+
+    assertEquals("Wrong value", "/things/123", $(".template a").attr("href"))
+  } 
+
 }())
