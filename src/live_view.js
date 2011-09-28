@@ -109,6 +109,9 @@
   // Sets the values of named element to value, also 
   // can take an object of name value pairs to bulk set
   LiveView.prototype.set = function(name, value) {
+    if(value == null) {
+      value = ""
+    }
     if(arguments.length !== 2) {
       each(name, this.set, this)
     } else {
@@ -121,9 +124,9 @@
       } 
 
       this.variableAttributeElements.each(function(i, el) {
-        for (var i = 0; i < el.attributes.length; i++) {
+        for(var i = 0; i < el.attributes.length; i++) {
           var attrib = el.attributes[i];
-          if (attrib.specified == true) {
+          if(attrib.specified == true) {
             var regex = new RegExp("#{" + name + "}","g")
             attrib.value = attrib.value.replace(regex, value.content)
           }

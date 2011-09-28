@@ -255,4 +255,5 @@
 
     assertEquals("Wrong value", "/things/123", $(".template a").attr("href"))
   } 
+
 }())
