@@ -2,6 +2,18 @@
 
   ViewTest = TestCase("ViewTest")
 
+  ViewTest.prototype.setup = function() {
+    this.server = sinon.fakeServer.create()
+    server.respondWith( "/views/tests/index.html"
+                      , [ 400
+                        , {}
+                        , "<div><div class = \"thing\"></div><div class = \"thing2\"></div></div>"])
+  }
+
+  ViewTest.prototype.teardown = function() {
+    this.server.restore()
+  }
+
   ViewTest.prototype.testSetVariable = function() {
     /*:DOC += <div id = "template"><span class = "variable"></span></div>*/
     var view = new LiveView("#template")
@@ -255,5 +267,12 @@
 
     assertEquals("Wrong value", "/things/123", $(".template a").attr("href"))
   } 
+
+  ViewTest.prototype.testTemplateFile = function() {
+    LiveView.fromFile("/views/tests/index.html", {id: 123}, function() {
+      assertEquals("Wrong value", "derp", $(".thing").html())
+      assertEquals("Wrong value", "herp", $(".thing2").html())
+    })
+  }
 
 }())

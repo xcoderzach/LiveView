@@ -53,6 +53,13 @@
     }, this)
   }
 
+  LiveView.fromFile = function(template, data, callback) {
+    $.get(template, function(r) {
+      var templateContents = r.responseText
+      callback(new LiveView(templateContents, data))
+    })
+  }
+
   LiveView.prototype.serialize = function() {
     this.context.attr("data-liveview", true)
     each(this.collections, function(key, collection) {
