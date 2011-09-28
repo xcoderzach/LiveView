@@ -16,16 +16,18 @@
 
   ViewTest.prototype.testSetVariable = function() {
     /*:DOC += <div id = "template"><span class = "variable"></span></div>*/
-    var view = new LiveView("#template")
-    view.set("variable", "value")
-    assertEquals("Variable was not set", $("#template .variable").html(), "value")
+    new LiveView("#template", {}, function(view) {
+      view.set("variable", "value")
+      assertEquals("Variable was not set", $("#template .variable").html(), "value")
+    })
   }
 
   ViewTest.prototype.testSetAttribute = function() {
     /*:DOC += <div id = "template"><a class = "variable"></a></div>*/
-    var view = new LiveView($("#template"))
-    view.set("variable", {"content":"googs", "href": "http://google.com"})
-    assertEquals("Variable was not set", $("#template .variable").attr("href"), "http://google.com")
+    new LiveView($("#template"), {}, function(view) {
+      view.set("variable", {"content":"googs", "href": "http://google.com"})
+      assertEquals("Variable was not set", $("#template .variable").attr("href"), "http://google.com")
+    })
   } 
 
   ViewTest.prototype.testAddIterable = function() {
@@ -36,14 +38,14 @@
                   </li>
                 </ul>
               </div>*/
-    var template = new LiveView("#templateIterable", {
+    new LiveView("#templateIterable", {
       "things": [{"variable": "A variable"}]
+    }, function(template) {
+      template.things.append({"variable": "A value"})
+
+      assertEquals("Variable was not set", $("#templateIterable li:nth-child(1) .variable").html(), "A variable")
+      assertEquals("Variable was not set", $("#templateIterable li:nth-child(2) .variable").html(), "A value")
     })
-
-    template.things.append({"variable": "A value"})
-
-    assertEquals("Variable was not set", $("#templateIterable li:nth-child(1) .variable").html(), "A variable")
-    assertEquals("Variable was not set", $("#templateIterable li:nth-child(2) .variable").html(), "A value")
   } 
 
   ViewTest.prototype.testAddIterable = function() {
@@ -54,12 +56,12 @@
                   </li>
                 </ul>
               </div>*/
-    var template = new LiveView("#templateIterable", {
+    new LiveView("#templateIterable", {
       "things": [{"variable": "A variable"},{"variable": "A variable"}]
+    }, function(template) {
+      template.things.insert({"variable": "An inserted variable"}, 0)
+      assertEquals("Variable was not set", $("#templateIterable li:nth-child(1) .variable").html(), "An inserted variable")
     })
-
-    template.things.insert({"variable": "An inserted variable"}, 0)
-    assertEquals("Variable was not set", $("#templateIterable li:nth-child(1) .variable").html(), "An inserted variable")
   }   
 
   ViewTest.prototype.testUpdateIterable = function() {
@@ -70,13 +72,13 @@
                   </li>
                 </ul>
               </div>*/
-    var template = new LiveView("#templateCollection", {
+    new LiveView("#templateCollection", {
       "things": []
+    }, function(template) {
+      var thing = template.things.append({"variable": "value"})
+      thing.set({"variable": "newValue"})
+      assertEquals("Variable was not set", $("#templateCollection .variable").html(), "newValue")
     })
-
-    var thing = template.things.append({"variable": "value"})
-    thing.set({"variable": "newValue"})
-    assertEquals("Variable was not set", $("#templateCollection .variable").html(), "newValue")
   } 
 
   ViewTest.prototype.testDeleteIterable = function() {
@@ -87,12 +89,12 @@
                   </li>
                 </ul>
               </div>*/
-    var template = new LiveView($("#templateDelete"), {
+    new LiveView($("#templateDelete"), {
       "things": [{"variable": "A variable", _id: "identifier"}]
+    }, function(template) {
+      template.things.remove("identifier")
+      assertEquals("Not deleted", 0, $("#templateDelete .thing .variable").length)
     })
-
-    template.things.remove("identifier")
-    assertEquals("Not deleted", 0, $("#templateDelete .thing .variable").length)
   } 
 
   ViewTest.prototype.testHidingElement = function() {
@@ -100,10 +102,10 @@
                 <span class = "hideme"></span>
                 <span class = "andme"></span>
               </div>*/
-    var template = new LiveView($("#template"), {"hideme": false, "andme": false})
-
-    assertEquals("Elements were removed not hidden", 2, $("#template span").length)
-    assertEquals("Elements not hidden", 0, $("#template span:visible").length)
+    new LiveView($("#template"), {"hideme": false, "andme": false}, function(template) {
+      assertEquals("Elements were removed not hidden", 2, $("#template span").length)
+      assertEquals("Elements not hidden", 0, $("#template span:visible").length)
+    })
   } 
 
   ViewTest.prototype.testSettingHiddenElement = function() {
@@ -113,29 +115,32 @@
                   </div>
                 </span>
               </div> */
-    var template = new LiveView($("#template"), {"hideme": true, "updateme": "foo"})
-    template.set("hideme", false)
-    template.set("updateme", "bar")
-    template.set("hideme", true)
-    assertEquals("Not Set", "bar", $("#template .updateme").html())
+    new LiveView($("#template"), {"hideme": true, "updateme": "foo"}, function(template) {
+      template.set("hideme", false)
+      template.set("updateme", "bar")
+      template.set("hideme", true)
+      assertEquals("Not Set", "bar", $("#template .updateme").html())
+    })
   }
 
   ViewTest.prototype.testSetClassAttribute = function() {
     /*:DOC += <div id = "template">
                 <div class = "variable"></div>
               </div>*/
-    var view = new LiveView($("#template"))
-    view.set("variable", {"class": "add cool"})
-    assertEquals("Variable was not set", $("#template .variable").attr("class"), "variable add cool") 
+    new LiveView($("#template"), {}, function(view) {
+      view.set("variable", {"class": "add cool"})
+      assertEquals("Variable was not set", $("#template .variable").attr("class"), "variable add cool") 
+    })
   }
 
   ViewTest.prototype.testSetClassAttribute = function() {
     /*:DOC += <div id = "template">
                 <div class = "variable"></div>
               </div>*/
-    var view = new LiveView($("#template"))
-    view.set("variable", {"class": "add cool"})
-    assertEquals("Variable was not set", $("#template .variable").attr("class"), "variable add cool") 
+    new LiveView($("#template"), {}, function(view) {
+      view.set("variable", {"class": "add cool"})
+      assertEquals("Variable was not set", $("#template .variable").attr("class"), "variable add cool") 
+    })
   } 
 
   ViewTest.prototype.testSelfIsIterable = function() {
@@ -145,11 +150,11 @@
                   </li>
                 </ul>
               */
-    var template = new LiveView(".things", {
+    new LiveView(".things", {
       "things": [{"variable": "A variable"}]
+    }, function() {
+      assertEquals("Variable was not set", $(".things li:nth-child(1) .variable").html(), "A variable") 
     })
-
-    assertEquals("Variable was not set", $(".things li:nth-child(1) .variable").html(), "A variable") 
   } 
 
   ViewTest.prototype.testAddDifferentType = function() {
@@ -164,15 +169,14 @@
                 </div>
               </div>
             */
-    var template = new LiveView(".things", {
+    new LiveView(".things", {
       "things": [{"variable": "A variable"}]
+    }, function(template) {
+      var notherthing = new LiveView(".notherthing", {"value":"val"}, function(notherthing) {
+        template.things.appendView(notherthing)
+        assertEquals("Wrong value", "val", $(".things .notherthing .value").html())
+      })
     })
-
-    var notherthing = new LiveView(".notherthing", {"value":"val"})
-
-    template.things.appendView(notherthing)
-
-    assertEquals("Wrong value", "val", $(".things .notherthing .value").html())
   } 
 
   ViewTest.prototype.testPolymorphicBlocks = function() {
@@ -188,13 +192,13 @@
               </div>
             */ 
 
-    var template = new LiveView(".things", {
+    new LiveView(".things", {
       "things": [ {"type": "awesome", "awesomeo": "awesome thing"}
                 , {"type": "cool", "coolio": "cool thing"} ]
+    }, function() {
+      assertEquals("Wrong value", "cool thing", $(".things .thing.cool .coolio").html())
+      assertEquals("Wrong value", "awesome thing", $(".things .thing.awesome .awesomeo").html())
     })
-
-    assertEquals("Wrong value", "cool thing", $(".things .thing.cool .coolio").html())
-    assertEquals("Wrong value", "awesome thing", $(".things .thing.awesome .awesomeo").html())
 
   }
 
@@ -206,15 +210,15 @@
                 </ul>
             */ 
 
-    var template = new LiveView(".things", {
+    new LiveView(".things", {
       "things": [ "one", "two" ]
+    }, function(template) {
+      template.things.append("three")
+
+      assertEquals("Wrong value", "one", $(".things .value:nth-child(1)").html())
+      assertEquals("Wrong value", "two", $(".things .value:nth-child(2)").html())
+      assertEquals("Wrong value", "three", $(".things .value:nth-child(3)").html())
     })
-
-    template.things.append("three")
-
-    assertEquals("Wrong value", "one", $(".things .value:nth-child(1)").html())
-    assertEquals("Wrong value", "two", $(".things .value:nth-child(2)").html())
-    assertEquals("Wrong value", "three", $(".things .value:nth-child(3)").html())
   }
 
   ViewTest.prototype.testSerializing = function() {
@@ -225,14 +229,14 @@
                   </li>
                 </ul>
             */                
-    var template = new LiveView($(".template"), {things: [{woot: "w00t"}]})
+    new LiveView($(".template"), {things: [{woot: "w00t"}]}, function(template) {
+      template.serialize()
 
-    template.serialize()
-
-    assertEquals("Wrong value", "true", $(".template").attr("data-liveview"))
-    assertEquals("Wrong value", "things", $(".things").attr("data-liveview-collection"))
-    assertEquals("Wrong value", "true", $(".things .thing").attr("data-liveview"))
-    assertEquals("Wrong value", 1, $(".liveview-templates").length)
+      assertEquals("Wrong value", "true", $(".template").attr("data-liveview"))
+      assertEquals("Wrong value", "things", $(".things").attr("data-liveview-collection"))
+      assertEquals("Wrong value", "true", $(".things .thing").attr("data-liveview"))
+      assertEquals("Wrong value", 1, $(".liveview-templates").length)
+    })
   } 
 
   ViewTest.prototype.testUnserializing = function() {
@@ -248,14 +252,14 @@
                   </div>
                 </ul>
             */                
-    var template = new LiveView($(".template"), {})
+    new LiveView($(".template"), {}, function(template) {
+      template.things.append({woot: "w00t"})
+      template.things.append({woot: "w00t2"})
 
-    template.things.append({woot: "w00t"})
-    template.things.append({woot: "w00t2"})
-
-    assertEquals("Wrong value", "existing w00t", $(".things .thing:nth-child(1) .woot").html())
-    assertEquals("Wrong value", "w00t", $(".things .thing:nth-child(2) .woot").html())
-    assertEquals("Wrong value", "w00t2", $(".things .thing:nth-child(3) .woot").html())
+      assertEquals("Wrong value", "existing w00t", $(".things .thing:nth-child(1) .woot").html())
+      assertEquals("Wrong value", "w00t", $(".things .thing:nth-child(2) .woot").html())
+      assertEquals("Wrong value", "w00t2", $(".things .thing:nth-child(3) .woot").html())
+    })
   }
 
   ViewTest.prototype.testAttributeInterpolation = function() {
@@ -263,16 +267,15 @@
                 <a href = "/things/#{id}" data-var></a>
               </div>
             */                
-    var template = new LiveView($(".template"), {id: 123})
-
-    assertEquals("Wrong value", "/things/123", $(".template a").attr("href"))
+    new LiveView($(".template"), {id: 123}, function(template) {
+      assertEquals("Wrong value", "/things/123", $(".template a").attr("href"))
+    })
   } 
 
   ViewTest.prototype.testTemplateFile = function() {
-    LiveView.fromFile("/views/tests/index.html", {id: 123}, function() {
+    new LiveView("/views/tests/index.html", {id: 123}, function() {
       assertEquals("Wrong value", "derp", $(".thing").html())
       assertEquals("Wrong value", "herp", $(".thing2").html())
     })
   }
-
 }())
