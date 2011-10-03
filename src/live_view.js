@@ -1,6 +1,4 @@
- var LiveView
-
-(function($) {
+var LiveView = (function($) { 
 
   function each(data, fn, context) {
     var i
@@ -26,7 +24,21 @@
  
   // Contstructs a new live view from a template (css selector, or html)
   // and, optional data.
-  LiveView = function(template, data) {
+  LiveView = function(template, data, callback) {
+    var that = this
+    if(typeof template === "string" && template.match(/.*\.html/)) {
+      $.get(template, function(r) {
+        template = r.responseText
+        that.initialize(template, data, callback)
+      })
+    } else {
+      that.initialize(template, data, callback)
+    }
+  }
+
+  LiveView.prototype.initialize = function(template, data, callback) {
+    callback = callback || function() {}
+    var that = this
     this.context = $(template)
     this.collections = {}
     this.data = data = data || {}
@@ -38,22 +50,39 @@
       data = {value: data}
     }
 
-    this.getAttributesWithVariables()
+    this.substitutePartials(function() {
+      that.getAttributesWithVariables()
 
-    each(data, function(key, value) { 
-      if(isArray(value)) {
-        this.collections[key] = this[key] = new LiveViewCollection(this.getElementFromName(key, this.context), value, key)
-      } else {
-        this.set(key, value)
-      }
-    }, this)
+      each(data, function(key, value) {
+        if(isArray(value)) {
+          that.collections[key] = that[key] = new LiveViewCollection(that.getElementFromName(key, that.context), value, key)
+        } else {
+          that.set(key, value)
+        }
+      }) 
+
+      callback(that)
+    })
   }
 
-  LiveView.fromFile = function(template, data, callback) {
-    $.get(template, function(r) {
-      var templateContents = r.responseText
-      callback(new LiveView(templateContents, data))
-    })
+  LiveView.prototype.substitutePartials = function(callback) {
+    var partials = $("[data-partial]")
+      , length = partials.length
+      , completed = 0
+    if(length == 0) {
+      callback()
+    } else {
+      partials.each(function(index, element) {
+        template = $(element).attr("data-partial")
+        $.get(template, function(r) {
+          $(element).html(r.responseText)
+          if((++completed) == length) {
+            jstestdriver.console.log("derp")
+            callback()
+          }
+        })
+      })
+    }
   }
 
   LiveView.prototype.getAttributesWithVariables = function() {
@@ -234,4 +263,5 @@
     this.views[id] = view
   } 
 
+  return LiveView
 }(jQuery)) 
