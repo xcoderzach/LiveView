@@ -217,47 +217,6 @@
     assertEquals("Wrong value", "three", $(".things .value:nth-child(3)").html())
   }
 
-  ViewTest.prototype.testSerializing = function() {
-    /*:DOC += <div class = "template">
-                 <ul class = "things">
-                  <li class = "thing">
-                    <div class = "woot"></div>
-                  </li>
-                </ul>
-            */                
-    var template = new LiveView($(".template"), {things: [{woot: "w00t"}]})
-
-    template.serialize()
-
-    assertEquals("Wrong value", "true", $(".template").attr("data-liveview"))
-    assertEquals("Wrong value", "things", $(".things").attr("data-liveview-collection"))
-    assertEquals("Wrong value", "true", $(".things .thing").attr("data-liveview"))
-    assertEquals("Wrong value", 1, $(".liveview-templates").length)
-  } 
-
-  ViewTest.prototype.testUnserializing = function() {
-    /*:DOC += <div class = "template" data-liveview="true">
-                 <ul class = "things" data-liveview-collection="things">
-                  <li class = "thing" data-liveview="true">
-                    <div class = "woot">existing w00t</div>
-                  </li>
-                  <div class = "liveview-templates">
-                    <li class = "thing">
-                      <div class = "woot"></div>
-                    </li>
-                  </div>
-                </ul>
-            */                
-    var template = new LiveView($(".template"), {})
-
-    template.things.append({woot: "w00t"})
-    template.things.append({woot: "w00t2"})
-
-    assertEquals("Wrong value", "existing w00t", $(".things .thing:nth-child(1) .woot").html())
-    assertEquals("Wrong value", "w00t", $(".things .thing:nth-child(2) .woot").html())
-    assertEquals("Wrong value", "w00t2", $(".things .thing:nth-child(3) .woot").html())
-  }
-
   ViewTest.prototype.testAttributeInterpolation = function() {
     /*:DOC += <div class = "template">
                 <a href = "/things/#{id}" data-var></a>
@@ -274,5 +233,15 @@
       assertEquals("Wrong value", "herp", $(".thing2").html())
     })
   }
+
+  ViewTest.prototype.testPartial = function() {
+    /*:DOC += <div class = "template">
+                <div data-partial = "/views/tests/index.html"></div>
+              </div> */                
+    new LiveView("/views/tests/index.html", {id: 123}, function() {
+      assertEquals("Wrong value", "derp", $(".thing").html())
+      assertEquals("Wrong value", "herp", $(".thing2").html())
+    })
+  } 
 
 }())
