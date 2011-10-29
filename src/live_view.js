@@ -77,7 +77,6 @@ var LiveView = (function($) {
         $.get(template, function(r) {
           $(element).html(r.responseText)
           if((++completed) == length) {
-            jstestdriver.console.log("derp")
             callback()
           }
         })
