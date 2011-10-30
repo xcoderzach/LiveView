@@ -248,4 +248,12 @@
     })
   } 
 
+  ViewTest.prototype.testInput = function() {
+    fail("test it")
+  }
+
+  ViewTest.prototype.testUpdateAttributeMultipleTime = function() {
+    fail("test it")
+  }
+
 }())

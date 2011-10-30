@@ -22,13 +22,12 @@ var LiveView = (function($) {
     return Object.prototype.toString.call(array) === '[object Array]'
   }
  
-  // Contstructs a new live view from a template (css selector, or html)
+  // Contstructs a new live view from a template (css selector, html, or template url)
   // and, optional data.
   LiveView = function(template, data, callback) {
     var that = this
     if(typeof template === "string" && template.match(/.*\.html/)) {
-      $.get(template, function(r) {
-        template = r.responseText
+      $.get(template, function(template) {
         that.initialize(template, data, callback)
       })
     } else {
@@ -85,7 +84,31 @@ var LiveView = (function($) {
   }
 
   LiveView.prototype.getAttributesWithVariables = function() {
-    this.variableAttributeElements = $("[data-var]", this.context)
+    var orig = []
+    $("[data-var]", this.context).each(function(i, el) {
+      var attrs = []
+      orig.push({attrs: attrs, element: el})
+      for(var i = 0; i < el.attributes.length; i++) {
+         var attrib = el.attributes[i]
+         if(attrib.specified == true) {
+           var memo = { name: attrib.name
+                      , value: attrib.value }
+         }
+         attrs.push(memo)
+      } 
+    })
+
+    this.setAttributeOfElement = function(name, value) {
+      _(orig).each(function(obj) {
+        var element = $(obj.element)
+        _(obj.attrs).each(function(memo) {
+          regex = new RegExp("#{" + name + "}","g")
+          if(memo.value.match(regex)) {
+            element.attr(memo.name, memo.value.replace(regex, value.content))
+          }
+        })
+      })
+    }
   }
 
   // Given the name of the data a user passed in, return an element
@@ -124,6 +147,7 @@ var LiveView = (function($) {
   // Sets the values of named element to value, also 
   // can take an object of name value pairs to bulk set
   LiveView.prototype.set = function(name, value) {
+    var that = this
     if(value == null) {
       value = ""
     }
@@ -138,29 +162,29 @@ var LiveView = (function($) {
         value = {content: value}
       } 
 
-      this.variableAttributeElements.each(function(i, el) {
-        for(var i = 0; i < el.attributes.length; i++) {
-          var attrib = el.attributes[i];
-          if(attrib.specified == true) {
-            var regex = new RegExp("#{" + name + "}","g")
-            attrib.value = attrib.value.replace(regex, value.content)
+      this.setAttributeOfElement(name, value)
+
+      element.each(function(index, element) {
+        el = $(element)
+        tagName = element.tagName
+        each(value, function(key, value) {
+          if(key === "content") {
+            if(tagName.toLowerCase() == "input") {
+              el.val(value)
+            } else {
+              el.html(value)
+            }
+          } else if(key === "visible") {
+            that.setVisible(name, value)
+          } else if(key === "class") {
+            el.attr("class", name + " " + value)
+          } else {
+            el.attr(key, value)
           }
-        }
-
-      })
+        })
+      }) 
     }
-
-    each(value, function(key, value) {
-      if(key === "content") {
-        element.html(value)
-      } else if(key === "visible") {
-        this.setVisible(name, value)
-      } else if(key === "class") {
-        element.attr("class", name + " " + value)
-      } else {
-        element.attr(key, value)
-      }
-    }, this)
+    
   }
 
   LiveView.prototype.remove = function() {
