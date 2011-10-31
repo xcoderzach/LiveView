@@ -53,15 +53,15 @@ var LiveView = (function($) {
       that.getAttributesWithVariables()
 
       each(data, function(key, value) {
-        if(isArray(value)) {
-          that.collections[key] = that[key] = new LiveViewCollection(that.getElementFromName(key, that.context), value, key)
-        } else {
-          that.set(key, value)
-        }
+        that.set(key, value)
       }) 
 
       callback(that)
     })
+  }
+
+  LiveView.prototype.addCollection = function(key, value) {
+    this.collections[key] = this[key] = new LiveViewCollection(this.getElementFromName(key, this.context), value, key)
   }
 
   LiveView.prototype.substitutePartials = function(callback) {
@@ -154,6 +154,11 @@ var LiveView = (function($) {
     if(arguments.length !== 2) {
       each(name, this.set, this)
     } else {
+      if(isArray(value)) {
+        this.addCollection(name, value)
+        return
+      }
+
       var element = this.getElementFromName(name, this.context)
 
       if(typeof value == "boolean") {
