@@ -41,8 +41,8 @@ var LiveView = (function($) {
     this.context = $(template)
     this.collections = {}
     this.data = data = data || {}
-    this._id = data._id
-    this.context.attr("data-id", this._id) 
+    this.id = data.id
+    this.context.attr("data-id", this.id) 
 
     if($("form", this.context)) {
       this.form = new LiveViewForm(this)
@@ -263,7 +263,7 @@ var LiveView = (function($) {
 
     if(!isArray(data)) {
       type = data.type || "";
-      id = data._id
+      id = data.id
       element = this.getTemplate(type).clone(true)
       view = new LiveView(element, data)
 
