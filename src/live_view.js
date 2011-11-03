@@ -44,6 +44,9 @@ var LiveView = (function($) {
     this._id = data._id
     this.context.attr("data-id", this._id) 
 
+    if($("form", this.context)) {
+      this.form = new LiveViewForm(this)
+    }
     //shorthand for an array of strings
     if(typeof data === "string") {
       data = {value: data}
@@ -294,6 +297,35 @@ var LiveView = (function($) {
     this.collection.splice(index, 0, index)
     this.views[id] = view
   } 
+
+  var LiveViewForm = function(view) {
+    this.view = view
+    var that = this
+    this.bindValues()
+  }
+
+  LiveViewForm.prototype.bindValues = function() {
+    var that = this
+    $("input[data-value-bind]", this.context).live("change", function() {
+      var element = $(this)
+        , name = element.attr("data-value-bind")
+
+      if(this.tagName.toLowerCase() == "input") {
+        if(element.attr("type") == "file") {
+          fileElement = $(this)
+          file = this.files[0]
+          reader = new FileReader()
+          reader.readAsDataURL(file)
+          reader.onload = function (e) {
+            that.view.set(name, e.target.result)
+          }
+        } else {
+          that.view.set(name, element.value)
+        }
+
+      }
+    }) 
+  }
 
   return LiveView
 }(jQuery)) 
