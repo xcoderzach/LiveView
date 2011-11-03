@@ -175,7 +175,11 @@ var LiveView = (function($) {
         each(value, function(key, value) {
           if(key === "content") {
             if(tagName.toLowerCase() == "input") {
-              el.val(value)
+              if(el.attr("type").toLowerCase() == "file") {
+                el.attr("data-value", value)
+              } else {
+                el.val(value)
+              }
             } else {
               el.html(value)
             }
