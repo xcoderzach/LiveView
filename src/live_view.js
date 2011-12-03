@@ -1,4 +1,4 @@
-var LiveView = (function($) { 
+define(["jquery", "underscore"], function($, _) { 
 
   function each(data, fn, context) {
     var i
@@ -328,4 +328,4 @@ var LiveView = (function($) {
   }
 
   return LiveView
-}(jQuery)) 
+})
