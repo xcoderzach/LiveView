@@ -1,37 +1,16 @@
 define(["jquery", "underscore"], function($, _) { 
 
-  function each(data, fn, context) {
-    var i
-    for(i in data) {
-      if(data.hasOwnProperty(i)) {
-        fn.call(context, i, data[i])
-      }
-    }
-  }
-
-  function merge(obj1, obj2) {
-    var i
-    for(i in obj2) {
-      if(obj2.hasOwnProperty(i)) {
-        obj1[i] = obj2[i]
-      }
-    }
-  }
-
-  var isArray = Array.isArray || function (array) {
-    return Object.prototype.toString.call(array) === '[object Array]'
-  }
- 
   // Contstructs a new live view from a template (css selector, html, or template url)
   // and, optional data.
-  LiveView = function(template, data, callback) {
+  var LiveView = function(template, data, callback) {
     var that = this
     if(typeof template === "string" && template.match(/.*\.html/)) {
       $.get(template, function(template) {
         that.initialize(template, data, callback)
       })
     } else {
-      that.initialize(template, data, callback)
+      // TODO do this on the next event loop tick
+      this.initialize(template, data, callback)
     }
   }
 
@@ -55,7 +34,7 @@ define(["jquery", "underscore"], function($, _) {
     this.substitutePartials(function() {
       that.getAttributesWithVariables()
 
-      each(data, function(key, value) {
+      _.each(data, function(value, key) {
         that.set(key, value)
       }) 
 
@@ -121,9 +100,9 @@ define(["jquery", "underscore"], function($, _) {
       return context
     }
     var elements = $("." + name, context)
-    each(this.hiddenElements, function(index, obj) { 
+    _.each(this.hiddenElements, function(obj) { 
       elements = elements.add($(obj.el).find("." + name))
-    }, this)
+    })
     return elements
   }
 
@@ -155,9 +134,11 @@ define(["jquery", "underscore"], function($, _) {
       value = ""
     }
     if(arguments.length !== 2) {
-      each(name, this.set, this)
+      _.each(name, function(value, key) {
+        that.set(key, value)
+      })
     } else {
-      if(isArray(value)) {
+      if(_.isArray(value)) {
         this.addCollection(name, value)
         return
       }
@@ -175,7 +156,7 @@ define(["jquery", "underscore"], function($, _) {
       element.each(function(index, element) {
         el = $(element)
         tagName = element.tagName
-        each(value, function(key, value) {
+        _.each(value, function(value, key) {
           if(key === "content") {
             if(tagName.toLowerCase() == "input") {
               if(el.attr("type").toLowerCase() == "file") {
@@ -261,7 +242,7 @@ define(["jquery", "underscore"], function($, _) {
       , type
       , id
 
-    if(!isArray(data)) {
+    if(!_.isArray(data)) {
       type = data.type || "";
       id = data.id
       element = this.getTemplate(type).clone(true)
@@ -274,15 +255,15 @@ define(["jquery", "underscore"], function($, _) {
       }
       return view
     } else {
-      each(data, function(i, item) { this.append(item) }, this)
+      _.each(data, function(item) { this.append(item) }, this)
     }
   }
 
   LiveViewCollection.prototype.append = function(data) {
-    if(!isArray(data)) {
+    if(!_.isArray(data)) {
       return this.insert(data)
     } else {
-      each(data, function(i, item) { this.append(item) }, this)
+      _.each(data, function(item) { this.append(item) }, this)
     }
   } 
 

@@ -1,3 +1,4 @@
+var LiveView
 define = function(arr, callback) {
-  callback($, _)
+  LiveView = callback($, _)
 }
