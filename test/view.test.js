@@ -90,7 +90,7 @@
                 </ul>
               </div>*/
     new LiveView($("#templateDelete"), {
-      "things": [{"variable": "A variable", _id: "identifier"}]
+      "things": [{"variable": "A variable", id: "identifier"}]
     }, function(template) {
       template.things.remove("identifier")
       assertEquals("Not deleted", 0, $("#templateDelete .thing .variable").length)
@@ -231,6 +231,18 @@
     })
   } 
 
+  ViewTest.prototype.testAttributeInterpolationMultipleTimes = function() {
+    /*:DOC += <div class = "template">
+                <a href = "/things/#{id}" data-var></a>
+              </div>
+            */                
+    new LiveView($(".template"), {id: 123}, function(template) {
+      template.set("id", 124)
+      assertEquals("Wrong value", "/things/124", $(".template a").attr("href"))
+    })
+  } 
+ 
+
   ViewTest.prototype.testTemplateFile = function() {
     new LiveView("/views/tests/index.html", {id: 123}, function() {
       assertEquals("Wrong value", "derp", $(".thing").html())
@@ -248,12 +260,18 @@
     })
   } 
 
-  ViewTest.prototype.testInput = function() {
-    fail("test it")
-  }
-
   ViewTest.prototype.testUpdateAttributeMultipleTime = function() {
-    fail("test it")
+
   }
 
+  ViewTest.prototype.testInputElement = function() {
+    /*:DOC += <div id = "template">
+                <input class = "thing">
+              </div> */
+    new LiveView("#template", {}, function(view) {
+      view.set("thing", "myvalue")
+      assertEquals("Variable was not set", $("#template .thing").val(), "myvalue")
+    })
+  }
+ 
 }())
