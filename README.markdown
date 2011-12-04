@@ -5,8 +5,7 @@ Like templates, except alive!
 Disclaimer
 ==========
 
-  This is experimental, if you poke it too hard it might break.  You've been
-  warned.
+  This is experimental, if you poke it too hard it might break.
 
 Why?
 ====
@@ -16,8 +15,6 @@ Why?
 
   I also wanted a way to create update and delete data that had been given to
   my templates on the fly.
-
-#### The DOM isn't a string! Don't treat it like one!
 
 What?
 =====
@@ -113,6 +110,13 @@ Dude I need to set the href attribute on a link
       image: {src: "/images/mycoolpic.png", alt: "A sweet pic"}
     });
 
+  Or: 
+
+    <div id = "attribute">
+      <a class = "link" href="#{theLink}"></a>
+      <img class = "image">
+    </div>
+
   And it works with any html attribute, need I say more?
 
 I have a list of blog posts, how do I show all of them?
@@ -143,9 +147,9 @@ I have a list of blog posts, how do I show all of them?
 
     // We can add them on the fly too!
 
-    var post = view.posts.append({title: "Incoming Post"});
+    var post = view.posts.append({title: "Incoming Post"})
     //we can even change it!
-    post.set("title", "Changed");
+    post.set("title", "Changed")
 
   That's it, consider it block'd.
 
@@ -153,17 +157,3 @@ License
 =======
 
 MIT Licensed (see LICENSE.txt)
-
-TODO
-====
-
-1. It would be nice if there were callbacks or something, "name.afterUpdate",
-   "things.afterCreate", "name.beforeRemove", etc or just a afterUpdate
-   beforeUpdate type thing which passes in a name and an element
-2. Use some kind of document generator/comment format
-3. Serialization: "package up" the current state so we can transport it from
-   the server.
-4. Open Source it
-5. have limits/sorting/formats be a data-attrib? maybe? or not? Dateformats for example??????
-6. forms, do we want to do somethin wif em?
-7. shorthand for just setting attributes "name.href" "name#href" "name|href"?
