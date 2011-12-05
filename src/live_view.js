@@ -1,6 +1,6 @@
 define(["jquery", "underscore"], function($, _) { 
 
-  // Contstructs a new live view from a template (css selector, html, or template url)
+  // Constructs a new live view from a template (css selector, html, or template url)
   // and, optional data.
   var LiveView = function(template, data, callback) {
     var that = this
@@ -143,7 +143,6 @@ define(["jquery", "underscore"], function($, _) {
         return
       }
 
-      var element = this.getElementFromName(name, this.context)
 
       if(typeof value == "boolean") {
         value = {visible: value}
@@ -152,6 +151,8 @@ define(["jquery", "underscore"], function($, _) {
       } 
 
       this.setAttributeOfElement(name, value)
+
+      var element = this.getElementFromName(name, this.context)
 
       element.each(function(index, element) {
         el = $(element)
@@ -177,7 +178,6 @@ define(["jquery", "underscore"], function($, _) {
         })
       }) 
     }
-    
   }
 
   LiveView.prototype.remove = function() {

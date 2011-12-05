@@ -153,6 +153,9 @@ I have a list of blog posts, how do I show all of them?
 
   That's it, consider it block'd.
 
+Write About Partials
+====================
+
 License
 =======
 
