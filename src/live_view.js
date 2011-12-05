@@ -17,6 +17,7 @@ define(["jquery", "underscore"], function($, _) {
   LiveView.prototype.initialize = function(template, data, callback) {
     callback = callback || function() {}
     var that = this
+    this.template = $(template).clone(true)
     this.context = $(template)
     this.collections = {}
     this.data = data = data || {}
@@ -43,7 +44,13 @@ define(["jquery", "underscore"], function($, _) {
   }
 
   LiveView.prototype.addCollection = function(key, value) {
-    this.collections[key] = this[key] = new LiveViewCollection(this.getElementFromName(key, this.context), value, key)
+    var element = this.getElementFromName(key, this.context)
+    if(!this.collections[key]) {
+      this.collections[key] = this[key] = new LiveViewCollection(element, value, key)
+    } else {
+      this.collections[key].removeAll()
+      this.collections[key].append(value)
+    }
   }
 
   LiveView.prototype.substitutePartials = function(callback) {
@@ -71,12 +78,12 @@ define(["jquery", "underscore"], function($, _) {
       var attrs = []
       orig.push({attrs: attrs, element: el})
       for(var i = 0; i < el.attributes.length; i++) {
-         var attrib = el.attributes[i]
-         if(attrib.specified == true) {
-           var memo = { name: attrib.name
-                      , value: attrib.value }
-         }
-         attrs.push(memo)
+        var attrib = el.attributes[i]
+        if(attrib.specified == true) {
+          var memo = { name: attrib.name
+                     , value: attrib.value }
+        }
+        attrs.push(memo)
       } 
     })
 
@@ -99,20 +106,7 @@ define(["jquery", "underscore"], function($, _) {
     if($(context).is("." + name)) {
       return context
     }
-    var elements = $("." + name, context)
-    _.each(this.hiddenElements, function(obj) { 
-      elements = elements.add($(obj.el).find("." + name))
-    })
-    return elements
-  }
-
-  // Toggles whether a named item is attached on the page
-  LiveView.prototype.toggle = function(name) {
-    if(this.hiddenElements[name]) {
-      this.set(name, true)
-    } else {
-      this.set(name, false)
-    }
+    return $("." + name, context)
   }
 
   LiveView.prototype.setVisible = function(name, value) {
@@ -233,6 +227,15 @@ define(["jquery", "underscore"], function($, _) {
     delete this.views[id]
     return view.remove()
   }
+
+  LiveViewCollection.prototype.removeAll = function() {
+    _.each(this.views, function(view) {
+      view.remove()
+    })
+    this.collection = []
+    this.views = {}
+  }
+ 
 
   // add it at the end
   // return a the new liveView when completed
