@@ -241,6 +241,20 @@
       assertEquals("Wrong value", "/things/124", $(".template a").attr("href"))
     })
   } 
+
+  ViewTest.prototype.testAttributeInterpolationMultipleTimesOnIterable = function() {
+    /*:DOC += <div class = "templates">
+                <div class = "template">
+                  <a href = "/things/#{id}" data-var></a>
+                </div>
+              </div>
+            */                
+    new LiveView($(".templates"), {templates: [{id: 1}, {id: 2}] }, function(template) {
+      template.set("templates", [{id: 3}, {id: 4}])
+      assertEquals("Wrong value", "/things/3", $($(".templates a")[0]).attr("href"))
+      assertEquals("Wrong value", "/things/4", $($(".templates a")[1]).attr("href"))
+    })
+  } 
  
 
   ViewTest.prototype.testTemplateFile = function() {
