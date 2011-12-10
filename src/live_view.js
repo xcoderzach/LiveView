@@ -233,6 +233,7 @@ define(["jquery", "underscore"], function($, _) {
       view.remove()
     })
     this.collection = []
+    this.container.html("")
     this.views = {}
   }
  
