@@ -21,7 +21,7 @@ define(["jquery", "underscore"], function($, _) {
     this.context = $(template)
     this.collections = {}
     this.data = data = data || {}
-    this.id = data.id
+    this.id = data._id
     this.context.attr("data-id", this.id) 
 
     if($("form", this.context)) {
@@ -248,7 +248,7 @@ define(["jquery", "underscore"], function($, _) {
 
     if(!_.isArray(data)) {
       type = data.type || "";
-      id = data.id
+      id = data._id
       element = this.getTemplate(type).clone(true)
       view = new LiveView(element, data)
 
