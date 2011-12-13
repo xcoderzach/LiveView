@@ -74,7 +74,7 @@ define(["jquery", "underscore"], function($, _) {
 
   LiveView.prototype.getAttributesWithVariables = function() {
     var orig = []
-    $("[data-var]", this.context).each(function(i, el) {
+    $("*", this.context).each(function(i, el) {
       var attrs = []
       orig.push({attrs: attrs, element: el})
       for(var i = 0; i < el.attributes.length; i++) {
