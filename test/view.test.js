@@ -41,7 +41,7 @@
     new LiveView("#templateIterable", {
       "things": [{"variable": "A variable"}]
     }, function(template) {
-      template.things.append({"variable": "A value"})
+      template.col("things").append({"variable": "A value"})
 
       assertEquals("Variable was not set", $("#templateIterable li:nth-child(1) .variable").html(), "A variable")
       assertEquals("Variable was not set", $("#templateIterable li:nth-child(2) .variable").html(), "A value")
@@ -59,7 +59,7 @@
     new LiveView("#templateIterable", {
       "things": [{"variable": "A variable"},{"variable": "A variable"}]
     }, function(template) {
-      template.things.insert({"variable": "An inserted variable"}, 0)
+      template.col("things").insert({"variable": "An inserted variable"}, 0)
       assertEquals("Variable was not set", $("#templateIterable li:nth-child(1) .variable").html(), "An inserted variable")
     })
   }   
@@ -75,7 +75,7 @@
     new LiveView("#templateCollection", {
       "things": []
     }, function(template) {
-      var thing = template.things.append({"variable": "value"})
+      var thing = template.col("things").append({"variable": "value"})
       thing.set({"variable": "newValue"})
       assertEquals("Variable was not set", $("#templateCollection .variable").html(), "newValue")
     })
@@ -90,9 +90,9 @@
                 </ul>
               </div>*/
     new LiveView($("#templateDelete"), {
-      "things": [{"variable": "A variable", id: "identifier"}]
+      "things": [{"variable": "A variable", _id: "identifier"}]
     }, function(template) {
-      template.things.remove("identifier")
+      template.col("things").remove("identifier")
       assertEquals("Not deleted", 0, $("#templateDelete .thing .variable").length)
     })
   } 
@@ -173,7 +173,7 @@
       "things": [{"variable": "A variable"}]
     }, function(template) {
       var notherthing = new LiveView(".notherthing", {"value":"val"}, function(notherthing) {
-        template.things.appendView(notherthing)
+        template.col("things").appendView(notherthing)
         assertEquals("Wrong value", "val", $(".things .notherthing .value").html())
       })
     })
@@ -213,7 +213,7 @@
     new LiveView(".things", {
       "things": [ "one", "two" ]
     }, function(template) {
-      template.things.append("three")
+      template.col("things").append("three")
 
       assertEquals("Wrong value", "one", $(".things .value:nth-child(1)").html())
       assertEquals("Wrong value", "two", $(".things .value:nth-child(2)").html())

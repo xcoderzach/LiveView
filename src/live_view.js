@@ -46,12 +46,20 @@ define(["jquery", "underscore"], function($, _) {
   LiveView.prototype.addCollection = function(key, value) {
     var element = this.getElementFromName(key, this.context)
     if(!this.collections[key]) {
-      this.collections[key] = this[key] = new LiveViewCollection(element, value, key)
+      this.collections[key] = new LiveViewCollection(element, value, key)
     } else {
       this.collections[key].removeAll()
       this.collections[key].append(value)
-    }
+    } 
   }
+
+  LiveView.prototype.col = LiveView.prototype.collection = function(key, value) {
+    if(typeof value == "undefined" || value === null) {
+      return this.collections[key]
+    } else {
+      this.addCollection(key, value)
+    }
+  }                                
 
   LiveView.prototype.substitutePartials = function(callback) {
     var partials = $("[data-partial]")
