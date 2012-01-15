@@ -9,8 +9,9 @@ define(["jquery", "underscore"], function($, _) {
         that.initialize(template, data, callback)
       })
     } else {
-      // TODO do this on the next event loop tick
-      this.initialize(template, data, callback)
+      process.nextTick(function() {
+        that.initialize(template, data, callback)
+      })
     }
   }
 
@@ -34,6 +35,7 @@ define(["jquery", "underscore"], function($, _) {
 
     this.substitutePartials(function() {
       that.getAttributesWithVariables()
+
 
       _.each(data, function(value, key) {
         that.set(key, value)
