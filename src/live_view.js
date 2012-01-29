@@ -163,8 +163,8 @@ define(["jquery", "underscore"], function($, _) {
         tagName = element.tagName
         _.each(value, function(value, key) {
           if(key === "content") {
-            if(tagName.toLowerCase() == "input") {
-              if(el.attr("type").toLowerCase() == "file") {
+            if(tagName.toLowerCase() == "input" || tagName.toLowerCase() == "select") {
+              if(el.attr("type") && el.attr("type").toLowerCase() == "file") {
                 el.attr("data-value", value)
               } else {
                 el.val(value)
