@@ -9,9 +9,7 @@ define(["jquery", "underscore"], function($, _) {
         that.initialize(template, data, callback)
       })
     } else {
-      process.nextTick(function() {
-        that.initialize(template, data, callback)
-      })
+      that.initialize(template, data, callback)
     }
   }
 
