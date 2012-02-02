@@ -23,9 +23,6 @@ define(["jquery", "underscore"], function($, _) {
     this.id = data._id
     this.context.attr("data-id", this.id) 
 
-    if($("form", this.context)) {
-      this.form = new LiveViewForm(this)
-    }
     //shorthand for an array of strings
     if(typeof data === "string") {
       data = {value: data}
@@ -144,7 +141,6 @@ define(["jquery", "underscore"], function($, _) {
         return
       }
 
-
       if(typeof value == "boolean") {
         value = {visible: value}
       } else if(typeof value !== "object") {
@@ -230,6 +226,7 @@ define(["jquery", "underscore"], function($, _) {
  
   LiveViewCollection.prototype.remove = function(id) {
     this.collection.splice(this.collection.indexOf(id), 1)
+    console.log(id, this.views)
     var view = this.views[id]
     delete this.views[id]
     return view.remove()
@@ -244,20 +241,20 @@ define(["jquery", "underscore"], function($, _) {
     this.views = {}
   }
  
-
   // add it at the end
   // return a the new liveView when completed
-  LiveViewCollection.prototype.insert = function(data, index) {
-    var element
-      , view
-      , type
+  LiveViewCollection.prototype.insert = function(document, index) {
+    var view
       , id
+      , type
+      , element
 
-    if(!_.isArray(data)) {
-      type = data.type || "";
-      id = data._id
+    if(!_.isArray(document)) {
+      document = document || {}
+      type = document.type || ""
+      id = document._id
       element = this.getTemplate(type).clone(true)
-      view = new LiveView(element, data)
+      view = new LiveView(element, document)  
 
       if(index === undefined) {
         this.appendView(view, id)
@@ -266,7 +263,7 @@ define(["jquery", "underscore"], function($, _) {
       }
       return view
     } else {
-      _.each(data, function(item) { this.append(item) }, this)
+      _.each(document, function(item) { this.insert(item, index) }, this)
     }
   }
 
@@ -289,35 +286,6 @@ define(["jquery", "underscore"], function($, _) {
     this.collection.splice(index, 0, index)
     this.views[id] = view
   } 
-
-  var LiveViewForm = function(view) {
-    this.view = view
-    var that = this
-    this.bindValues()
-  }
-
-  LiveViewForm.prototype.bindValues = function() {
-    var that = this
-    $("input[data-value-bind]", this.context).live("change", function() {
-      var element = $(this)
-        , name = element.attr("data-value-bind")
-
-      if(this.tagName.toLowerCase() == "input") {
-        if(element.attr("type") == "file") {
-          fileElement = $(this)
-          file = this.files[0]
-          reader = new FileReader()
-          reader.readAsDataURL(file)
-          reader.onload = function (e) {
-            that.view.set(name, e.target.result)
-          }
-        } else {
-          that.view.set(name, element.value)
-        }
-
-      }
-    }) 
-  }
 
   return LiveView
 })
