@@ -34,7 +34,6 @@ define(["jquery", "underscore"], function($, _) {
     this.substitutePartials(function() {
       that.getAttributesWithVariables()
 
-
       _.each(data, function(value, key) {
         that.set(key, value)
       }) 
