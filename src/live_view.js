@@ -203,9 +203,16 @@ define(["jquery", "underscore"], function($, _) {
     this.views = {}
     this.events = {}
     this.name = name
+    console.log(name)
+    this.empty = container.find("."+name + "Empty").remove()
+    console.log(this.empty)
     this.templates = container.children().remove()
     this.container.html("")
     this.append(data)
+    console.log(this.collection.length)
+    if (this.collection.length === 0) {
+      this.container.append(this.empty)
+    }
   }
 
   LiveViewCollection.prototype.getTemplate = function(type) {
@@ -225,14 +232,16 @@ define(["jquery", "underscore"], function($, _) {
 
   // number of live views in this collection
   LiveViewCollection.prototype.length = function() {
-    return this.collection.length
+    return this.collection.moment.jslength
   }
  
   LiveViewCollection.prototype.remove = function(id) {
     this.collection.splice(this.collection.indexOf(id), 1)
-    console.log(id, this.views)
     var view = this.views[id]
     delete this.views[id]
+    if(this.collection.length === 0) {
+      this.container.append(this.empty)  
+    }
     return view.remove()
   }
 
@@ -243,6 +252,7 @@ define(["jquery", "underscore"], function($, _) {
     this.collection = []
     this.container.html("")
     this.views = {}
+    this.container.append(this.empty)  
   }
  
   // add it at the end
@@ -254,6 +264,7 @@ define(["jquery", "underscore"], function($, _) {
       , element
 
     if(!_.isArray(document)) {
+      this.empty.remove()
       document = document || {}
       type = document.type || ""
       id = document._id
