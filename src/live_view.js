@@ -163,6 +163,10 @@ define(["jquery", "underscore"], function($, _) {
                 el.val(value)
               }
             } else {
+              if (format=el.attr("data-date-format")){
+                var momentFormat = moment(value)
+                value=momentFormat.format(format)
+              }
               el.html(value)
             }
           } else if(key === "visible") {
