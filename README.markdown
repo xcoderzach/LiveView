@@ -12,7 +12,7 @@ Table of Contents
   * [Tests](#tests)
   * [Contributing](#contributing)
   * [Contributors](#contributors)
-  * [License](#license)Why?
+  * [License](#license)
 
 <a name = "introduction"></a>
 
