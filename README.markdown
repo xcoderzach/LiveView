@@ -1,53 +1,72 @@
 LiveView v0.1
 =============
+
 Like templates, except alive!
 
-Disclaimer
-==========
+Table of Contents
+-----------------
+  * [Introduction](#introduction)
+  * [API docs](#api)
+  * [Experimental API docs](#experimental)
+  * [Examples](#examples)
+  * [Tests](#tests)
+  * [Contributing](#contributing)
+  * [Contributors](#contributors)
+  * [License](#license)
 
-  This is experimental, if you poke it too hard it might break.
+<a name = "introduction"></a>
 
-Why?
-====
+Introduction
+------------
 
-  I wanted a way to have templates that could be defined in semantic markup
-  and, given JSON could generate my markup.
+LiveView is a pure HTML clean templating engine that supports realtime
+modification of data displayed through the template. Basically, it allows you
+to make awesome, real-time web apps. __ALL__ of the awesome, real-time web
+apps.
 
-  I also wanted a way to create update and delete data that had been given to
-  my templates on the fly.
+LiveView tries to solve the same problems as traditional templating systems and
+then some. Rather than generating static markup, LiveView generates a DOM
+structure that allows you to update your template and its data on the fly, all
+while preserving event handlers and any associated data. This makes the view
+portion of creating realtime web apps a breeze!
 
-What?
-=====
+LiveView is the result of taking all of the techniques I was using to update
+the DOM and wrapping them up in a nice template-like interface. It also depends
+on jQuery. This could change, but I always use jQuery, so it's not high on my
+priority list.
 
-  Rather than create a seperate language for templating, LiveView uses a 
-  stricter subset of html.  
+When parts of your web app change rapidly, it's super useful. If your pages
+don't update very often, you can probably get away with just inserting HTML
+fragment strings into the document.
 
-  LiveView trys to solve the same problems as traditional templating systems,
-  and then some.  Rather than generating static markup, LiveView generates a
-  living, breathing thing, that allows you to update the your template and it's
-  data on the fly.  All while preserving event handlers and any associated
-  data.  This makes the view portion of creating realtime web apps a breeze!
+If you want a system that doesn't clobber your events, associated data, and
+element references, LiveView might be for you.
 
-  LiveView is the result of taking all of the techniques I was using to update
-  the DOM and wrapped in a nice template like interface.  
+<a name="api"></a>
 
-  It also depends on jquery, this could change, but I always use jQuery so
-  it's not high on my priority list.
+API docs
+--------
 
-When should I use this?
-=======================
-  
-  When parts of your web app are changing rapidly, it's super useful.  LiveView
-  is best suited for realtime web applications.  If your page doesn't update
-  very often you can probably get away with just inserting HTML fragment
-  strings into the document.  
-
-  If you want a system that doesn't clobber your events, associated data, and
-  element references, LiveView might be for you.
+You can find the API docs in the docs folder.
 
 
-I have this html, make it live!
-===============================
+<a name = "experimental"></a>
+
+Experimental API docs
+---------------------
+
+Experimental API docs will be made available when any part of the project isn't
+experimental.
+
+
+<a name = "examples"></a>
+
+Examples
+--------
+
+
+###I have this html, make it live!
+
 
     <div id = "myView">
       <div class = "currentTime"></div>
@@ -64,8 +83,7 @@ I have this html, make it live!
       view.set("currentTime", (new Date()).toTimeString());
     }, 1000);
 
-Other templating systems allow me to use conditionals!
-======================================================
+###Other templating systems allow me to use conditionals!
 
   It's true, conditionals are important, and we've got em! Here's an example.  
 
@@ -92,15 +110,14 @@ Other templating systems allow me to use conditionals!
   One thing to note, is that conditionals are REMOVED from the document when
   they are set to false, they're not just set to display:none;.
 
-Dude I need to set the href attribute on a link 
-===============================================
-
+###Dude I need to set the href attribute on a link
+ 
   Setting attributes is another one of those things that you'll probably need
   to do.  Luckily, you can!
 
     <div id = "attribute">
-      <a class = "link"></a>
-      <img class = "image">
+      <a href = "#{link}"></a>
+      <img src = "#{imagesrc}" alt = "#{imagealt}">
     </div>
 
   And JS:
@@ -119,8 +136,7 @@ Dude I need to set the href attribute on a link
 
   And it works with any html attribute, need I say more?
 
-I have a list of blog posts, how do I show all of them?
-=======================================================
+###I have a list of blog posts, how do I show all of them?
 
   Naturally, any template system is going to have to handle blocks, or
   iterables, or each statements, whatever you want to call them.  Here's how
@@ -153,15 +169,32 @@ I have a list of blog posts, how do I show all of them?
 
   That's it, consider it block'd.
 
-TODO Before we can release
-==========================
+<a name = "Contributing"></a>
+
+Contributing
+------------
+
+Ideas, feature requests, bug reports, etc are very welcome.
+
+###TODO Before we can release
 
   * scoping with thing.whatever syntax
   * get tests running with mocha
   * remove stupid features
   * documentation
+  * IE8 Support
 
+<a name = "contributors"></a>
+
+Contributors
+------------
+
+  * Zach Smith @xcoderzach
+  * Eugene Butler @EButlerIV
+
+<a name = "license"></a>
+ 
 License
-=======
+-------
 
 MIT Licensed (see LICENSE.txt)
