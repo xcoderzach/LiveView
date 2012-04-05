@@ -30,6 +30,26 @@ Returns elements that match selector. Finds elements in current view as well as 
 
 Sets the value or values of an element `name` to `value`. If a single object is passed, set each key in `JSONObject` to its value.
 
+```html
+<div class="post"></div>
+```
+
+```javascript
+LiveView.set("post", "An angry comment about your taste in movies.")
+```
+If live view was constructed with scopes, you can do the following:
+
+```html
+<div class = "title"></div>
+<div class = "postTitle"></div>
+```
+
+```javascript
+var view = new LiveView("template.html", {})
+view.set("title", "Another post.")
+```
+This will set both .title and .postTitle, this can be used to disambiguate classes in subViews.
+
 ###remove
 
 #####LiveView.remove()
