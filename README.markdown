@@ -1,7 +1,7 @@
 LiveView v0.1
 =============
 
-Like templates, except alive!
+  Templates from the semantic HTML you would have written anyways.
 
 Table of Contents
 -----------------
