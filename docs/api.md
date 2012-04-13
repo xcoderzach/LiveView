@@ -14,21 +14,25 @@ live view variables. If omitted, LiveView will assume the default scope, "main."
 
 #####LiveView.changeTemplate(template) 
 
-Changes the template used by the live view to the one specified. This can be used to hotswap templates during development.
+Changes the template used by the live view to the one specified. This can be
+used to hotswap templates during development.
+
 ######TODO: Make hotswapping possible
 
 ###find
 
 #####LiveView.find(selector)
 
-Returns elements that match selector. Finds elements in current view as well as elements in any polymorphic subviews.
+Returns elements that match selector. Finds elements in current view as well as
+elements in any polymorphic subviews.
 
 ###set
 
 #####LiveView.set(name, value)
 #####LiveView.set(JSONObject)
 
-Sets the value or values of an element `name` to `value`. If a single object is passed, set each key in `JSONObject` to its value.
+Sets the value or values of an element `name` to `value`. If a single object is
+passed, set each key in `JSONObject` to its value.
 
 ```html
 <div class="post"></div>
